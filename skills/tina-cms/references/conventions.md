@@ -46,14 +46,14 @@ When in doubt about which mode applies, say which evidence you found and ask, ra
 
 ## Layout and file conventions
 
-| Convention | Check | Why it matters |
-| :--- | :--- | :--- |
-| Config location | Current projects use `tina/config.ts` (`tsx` also valid). Legacy projects use `.tina/`. | The config moved from `.tina/` to `tina/`; advising against the wrong path fails. |
-| Generated directory | `tina/__generated__/` (or `.tina/__generated__/`) is gitignored (except in hybrid mode) and rebuilt by `tinacms dev` / `tinacms build`. | It is build output; it must not be hand-edited or, in build-on-CI mode, tracked. |
-| Lockfile | `tina/tina-lock.json` is committed. | TinaCloud consumes it at deploy; stale or untracked locks break indexing. |
-| Build order | The build script runs `tinacms build` before the framework build. | The framework compile depends on the generated types and client. |
-| ESM-only | The current Tina line is ESM-only. | A CommonJS build setup will not resolve the packages correctly. |
-| Media config | The media store (`build.media` and the local public folder) matches where content actually references media. | A mismatch makes uploads succeed but images fail to resolve. |
+| Convention          | Check                                                                                                                                   | Why it matters                                                                    |
+| :------------------ | :-------------------------------------------------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------- |
+| Config location     | Current projects use `tina/config.ts` (`tsx` also valid). Legacy projects use `.tina/`.                                                 | The config moved from `.tina/` to `tina/`; advising against the wrong path fails. |
+| Generated directory | `tina/__generated__/` (or `.tina/__generated__/`) is gitignored (except in hybrid mode) and rebuilt by `tinacms dev` / `tinacms build`. | It is build output; it must not be hand-edited or, in build-on-CI mode, tracked.  |
+| Lockfile            | `tina/tina-lock.json` is committed.                                                                                                     | TinaCloud consumes it at deploy; stale or untracked locks break indexing.         |
+| Build order         | The build script runs `tinacms build` before the framework build.                                                                       | The framework compile depends on the generated types and client.                  |
+| ESM-only            | The current Tina line is ESM-only.                                                                                                      | A CommonJS build setup will not resolve the packages correctly.                   |
+| Media config        | The media store (`build.media` and the local public folder) matches where content actually references media.                            | A mismatch makes uploads succeed but images fail to resolve.                      |
 
 ## Collection conventions
 
@@ -71,11 +71,11 @@ When in doubt about which mode applies, say which evidence you found and ask, ra
 
 ## Framework-specific conventions
 
-| Framework | Convention |
-| :--- | :--- |
-| Next.js App Router | Admin route under `app/admin/...`; content reads through the generated client; `useTina` only in a Client Component. |
-| Next.js Pages Router | Admin route under `pages/admin/...` with the matching pages-router shape. |
-| Astro | Admin is served as an island/output within the Astro build; confirm the Tina build runs before the Astro build. |
+| Framework            | Convention                                                                                                           |
+| :------------------- | :------------------------------------------------------------------------------------------------------------------- |
+| Next.js App Router   | Admin route under `app/admin/...`; content reads through the generated client; `useTina` only in a Client Component. |
+| Next.js Pages Router | Admin route under `pages/admin/...` with the matching pages-router shape.                                            |
+| Astro                | Admin is served as an island/output within the Astro build; confirm the Tina build runs before the Astro build.      |
 
 Read the admin route for the framework actually present; do not assume one router shape.
 

@@ -16,12 +16,12 @@ this file does not carry raw URLs.
 Four surfaces are commonly conflated. Identify which one the task touches before
 proposing any rendering or CSS change:
 
-| Surface | What it is | Where its guidance lives |
-| :--- | :--- | :--- |
-| Public-site rendering | The site that reads content and renders it to visitors. | The generated client and contextual-editing topics; the field-type pages for rendered content. |
-| Tina admin | The `/admin` editing UI that Tina serves. | Admin route placement and request-interception topics. |
-| Custom admin field UI | A custom editor control inside the admin for a specific field. | The fields reference and the object field type (see below). |
-| TinaDocs | A separate documentation-site workflow with its own OpenAPI generation. | Do not merge with TinaCMS admin or content work; TinaDocs is a distinct module. |
+| Surface               | What it is                                                              | Where its guidance lives                                                                       |
+| :-------------------- | :---------------------------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| Public-site rendering | The site that reads content and renders it to visitors.                 | The generated client and contextual-editing topics; the field-type pages for rendered content. |
+| Tina admin            | The `/admin` editing UI that Tina serves.                               | Admin route placement and request-interception topics.                                         |
+| Custom admin field UI | A custom editor control inside the admin for a specific field.          | The fields reference and the object field type (see below).                                    |
+| TinaDocs              | A separate documentation-site workflow with its own OpenAPI generation. | Do not merge with TinaCMS admin or content work; TinaDocs is a distinct module.                |
 
 Also separate CSS by surface: public-site CSS, TinaCMS admin CSS, and TinaDocs
 CSS have different contracts. Do not offer general CSS advice until the affected

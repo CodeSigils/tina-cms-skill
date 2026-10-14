@@ -18,11 +18,11 @@ against `version-registry.md`.
 Pick the lane from repository evidence (see `project-inspection.md`), then apply
 its contract. The three modes are independent of the deployment host.
 
-| Mode | How to recognize it | What it changes |
-| :--- | :--- | :--- |
-| Local files | No cloud client id or token; no `/api/tina/*` route; content is read from the repo at build time. | No cloud environment required. `--content=local` selects this source; a `path` or config change may need a dev restart. |
-| TinaCloud | `NEXT_PUBLIC_TINA_CLIENT_ID` / `TINA_TOKEN` (often `NEXT_PUBLIC_TINA_BRANCH`); a `clientId`/`token` in `tina/config.*`; a committed lock file. | The cloud environment contract, lock-file indexing, and the deploy-time build-source requirement apply. |
-| Self-hosted | A `/api/tina/*` route backed by `@tinacms/datalayer` (often `tinacms-authjs`). | Runs a Node.js backend and needs a configured Git provider. It does not run on an edge runtime. |
+| Mode        | How to recognize it                                                                                                                            | What it changes                                                                                                         |
+| :---------- | :--------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------- |
+| Local files | No cloud client id or token; no `/api/tina/*` route; content is read from the repo at build time.                                              | No cloud environment required. `--content=local` selects this source; a `path` or config change may need a dev restart. |
+| TinaCloud   | `NEXT_PUBLIC_TINA_CLIENT_ID` / `TINA_TOKEN` (often `NEXT_PUBLIC_TINA_BRANCH`); a `clientId`/`token` in `tina/config.*`; a committed lock file. | The cloud environment contract, lock-file indexing, and the deploy-time build-source requirement apply.                 |
+| Self-hosted | A `/api/tina/*` route backed by `@tinacms/datalayer` (often `tinacms-authjs`).                                                                 | Runs a Node.js backend and needs a configured Git provider. It does not run on an edge runtime.                         |
 
 If both cloud environment names and a `/api/tina/*` route appear, treat it as
 self-hosted and confirm the Git provider; do not assume TinaCloud.
@@ -94,13 +94,13 @@ The documented family is `{vercel, netlify, github-pages, cloudflare-pages,
 cloudflare-workers}`. Do not present a target as supported if it is not in this
 family.
 
-| Host | Trap to check before advising |
-| :--- | :--- |
-| Vercel | The Tina build must run before the framework build. Set explicit revalidation or content goes stale. Conditional deploys can use an ignore-build step; full GitHub Actions delegation needs a Vercel token and project/org id secrets. |
-| Netlify | `netlify.toml` takes precedence over the build command set in the UI, and the build command must run `tinacms build` before the framework build. Monorepos may need to forward environment variables through the monorepo tool's config. |
-| GitHub Pages | The site source must select "GitHub Actions", not "Deploy from a branch", or TinaCMS is never built. A missing entry page can cause a root-URL 404. |
-| Cloudflare Pages | A static/Pages target; `tinacms build` must run in the build step. |
-| Cloudflare Workers | An edge-runtime target. It can serve a TinaCloud-backed site, but it cannot host the self-hosted Node backend. Use TinaCloud for edge-served sites. |
+| Host               | Trap to check before advising                                                                                                                                                                                                            |
+| :----------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Vercel             | The Tina build must run before the framework build. Set explicit revalidation or content goes stale. Conditional deploys can use an ignore-build step; full GitHub Actions delegation needs a Vercel token and project/org id secrets.   |
+| Netlify            | `netlify.toml` takes precedence over the build command set in the UI, and the build command must run `tinacms build` before the framework build. Monorepos may need to forward environment variables through the monorepo tool's config. |
+| GitHub Pages       | The site source must select "GitHub Actions", not "Deploy from a branch", or TinaCMS is never built. A missing entry page can cause a root-URL 404.                                                                                      |
+| Cloudflare Pages   | A static/Pages target; `tinacms build` must run in the build step.                                                                                                                                                                       |
+| Cloudflare Workers | An edge-runtime target. It can serve a TinaCloud-backed site, but it cannot host the self-hosted Node backend. Use TinaCloud for edge-served sites.                                                                                      |
 
 Valid targets with no documented recipe (for example a self-managed server) are
 "other": ask for the build configuration before advising on build order or

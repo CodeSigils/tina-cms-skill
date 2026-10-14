@@ -33,19 +33,19 @@ The CLI overview topic in `source-registry.md` is the single source for the
 documented command surface. Confirm every flag against the installed CLI version
 before quoting it, because flags are version-sensitive.
 
-| Command or flag | What it does |
-| :--- | :--- |
-| `tinacms dev -c "<framework dev>"` | Runs the dev server and wraps the framework's own dev command. The wrapped command (`-c`) is the framework dev server, so read it to learn the framework. |
-| `tinacms build` | Produces the production CMS build. Run it before the framework build (the framework compile depends on the generated client and types). A script such as `tinacms build && next build` is the documented order. |
-| `--content=local` | Selects a local content source instead of cloud indexing. Local mode skips the cloud index, and a `path` or config change may need a dev restart. |
-| `--port` | Dev server port; documented default `4001`. |
-| `--datalayer-port` | Data-layer port; documented default `9000`. |
-| `-c "<command>"` | The framework command the dev server wraps. |
-| `--noWatch` | Disables file watching during dev, so a single controlled regeneration can run. |
-| `--noSDK` | Skips SDK generation. |
-| `--noTelemetry` | Disables telemetry. |
-| `audit --clean` | Project audit and cleanup diagnostic. |
-| `doctor --json` | Project diagnosis, emitted as JSON. |
+| Command or flag                    | What it does                                                                                                                                                                                                    |
+| :--------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `tinacms dev -c "<framework dev>"` | Runs the dev server and wraps the framework's own dev command. The wrapped command (`-c`) is the framework dev server, so read it to learn the framework.                                                       |
+| `tinacms build`                    | Produces the production CMS build. Run it before the framework build (the framework compile depends on the generated client and types). A script such as `tinacms build && next build` is the documented order. |
+| `--content=local`                  | Selects a local content source instead of cloud indexing. Local mode skips the cloud index, and a `path` or config change may need a dev restart.                                                               |
+| `--port`                           | Dev server port; documented default `4001`.                                                                                                                                                                     |
+| `--datalayer-port`                 | Data-layer port; documented default `9000`.                                                                                                                                                                     |
+| `-c "<command>"`                   | The framework command the dev server wraps.                                                                                                                                                                     |
+| `--noWatch`                        | Disables file watching during dev, so a single controlled regeneration can run.                                                                                                                                 |
+| `--noSDK`                          | Skips SDK generation.                                                                                                                                                                                           |
+| `--noTelemetry`                    | Disables telemetry.                                                                                                                                                                                             |
+| `audit --clean`                    | Project audit and cleanup diagnostic.                                                                                                                                                                           |
+| `doctor --json`                    | Project diagnosis, emitted as JSON.                                                                                                                                                                             |
 
 `audit` and `doctor` are diagnostics: run them to gather evidence, then read the
 installed CLI version before acting on the output. See the CLI overview and the
