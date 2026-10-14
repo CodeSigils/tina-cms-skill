@@ -9,7 +9,7 @@ Tina is not one surface. A single repository can combine the TinaCMS content fra
 
 ## Runtime Boundary
 
-This skill loads only files under `skills/tina-cms/` (this file, `references/`, and `scripts/`). Nothing the loaded skill reads or links may point at `docs/research/` or any path outside the skill directory; those are authoring-time inputs, not runtime inputs. Every external link comes from `references/source-registry.md`. Never invent or "remember" a docs URL; look the topic up in the registry, or state that the link is unverified.
+This skill loads only files under `skills/tina-cms/` (this file and `references/`). Nothing the loaded skill reads or links may point at `docs/research/` or any path outside the skill directory; those are authoring-time inputs, not runtime inputs. Every external link comes from `references/source-registry.md`. Never invent or "remember" a docs URL; look the topic up in the registry, or state that the link is unverified.
 
 ## Step 0: Inspect The Repository Before Advising
 

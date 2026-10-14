@@ -226,6 +226,7 @@ jobs:
           fi
 
       - name: Record the run in the research log
+        continue-on-error: true
         env:
           DRIFT: ${{ steps.scan.outputs.drift }}
           STALE_COUNT: ${{ steps.scan.outputs.stale_count }}

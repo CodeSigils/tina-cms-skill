@@ -24,7 +24,7 @@ const SCRIPT_DIR = dirname(fileURLToPath(import.meta.url));
 /** The checker could not run, as opposed to finding a problem. */
 class CheckError extends Error {}
 
-const REFERENCE_TOPIC_FILES = [
+const RESEARCH_TOPIC_FILES = [
   "installation.md",
   "tina-cli.md",
   "schema-and-collections.md",
@@ -352,7 +352,7 @@ function checkVersionRegistry(findings, root) {
 
 function checkResearchTopicFiles(findings, root) {
   const dir = join(root, "docs", "research");
-  for (const name of REFERENCE_TOPIC_FILES) {
+  for (const name of RESEARCH_TOPIC_FILES) {
     const file = join(dir, name);
     if (!existsSync(file)) {
       findings.push({ code: "f.missing", message: `docs/research/${name} is missing` });
@@ -387,7 +387,7 @@ function checkFindingIds(findings, root) {
   }
   const seenInTopics = new Set();
   const orphanReported = new Set();
-  for (const name of REFERENCE_TOPIC_FILES) {
+  for (const name of RESEARCH_TOPIC_FILES) {
     const file = join(dir, name);
     if (!existsSync(file)) continue;
     const text = readText(file);

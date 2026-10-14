@@ -114,3 +114,36 @@ area is exercised against a real target.
   explicit blocked-versions deny list, or when a real release-date field is
   added (which would let the `@latest` caution become a computed check instead of
   a static note).
+
+## Session 2026-10-14: verification remediation (F2 blocking + minors)
+
+This session records the remediation of the final-verification findings raised
+against the built skill. It is a maintenance and quality record; the runtime
+references were updated to match it.
+
+### Sources
+
+- Live npm registry: `npm view tinacms version` and `npm view @tinacms/cli version` (2026-10-14).
+- The final verification reports: plan-compliance (F1, approved), quality (F2, rejected on two blocking findings), ideal-state fidelity (F4, request changes), manual QA (F3).
+
+### Method
+
+- Re-verified the current stable line against npm rather than memory: `tinacms` 3.14.4 (unchanged) and `@tinacms/cli` 4.0.2. The recorded "2.1.x line" was wrong: `2.1.8` is the security floor, not the current line.
+- Updated `CLI-02`, added `CLI-12`, and reconciled `CLI-09`: there is no `tinacms` v4, and `tinacms` and `@tinacms/cli` sit on separate release lines.
+- Added provenance headers (finding IDs + tier + checked date + recheck trigger) to the runtime references that lacked them: `conventions.md`, `project-inspection.md`, `version-registry.md`, and the `source-registry.md` provenance line.
+- Tightened the `tinacms` floor from `>= 3.3.x` to `>= 3.3.1` to match the recorded fix release.
+- Corrected the runtime `SKILL.md` load-set statement to match the actual payload (no phantom `scripts/` directory).
+
+### Findings
+
+- The `@tinacms/cli` current-stable line was recorded two majors behind reality; this is the drift the freshness workflow exists to catch. It was found by review, not by the automated job, because the job had not yet run against a remote.
+- Runtime references were not covered by the provenance check that already applied to `docs/research/` topic files, so four references had shipped without a provenance header.
+
+### Decision / policy
+
+- Reaffirmed: the `@tinacms/cli` security floor stays `>= 2.1.8` (CVE-2026-28792); only the "current stable line" value changed.
+- The version registry remains the single source of floors, windows, and current-stable values; nothing is presented as timeless.
+
+### Next-research trigger
+
+- On the next `@tinacms/cli` or `tinacms` release, and when a remote exists so the weekly freshness job can run against it.

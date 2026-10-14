@@ -4,6 +4,8 @@ Read this file when you need the full routing procedure: which Tina surface a ta
 
 This reference is part of the runtime skill. It has no path into `docs/research/`; authoring notes stay outside the loaded skill. Every external link named below is referenced by topic and pulled from `source-registry.md`; this file does not carry raw URLs.
 
+> Provenance: findings `DEPLOY-01` through `DEPLOY-09`, `CLOUD-01` through `CLOUD-05`, `SELF-01` through `SELF-05`, `API-01`, `API-09`, `CLI-05` | tiers: TIER1, TIER2, TIER3 (per row) | checked 2026-10-13 | recheck trigger: whenever a deployment-target or backend-routing fact changes, or a host adds or retires a documented deployment option.
+
 ## The four inspection axes
 
 The skill routes on three independent content axes plus a deployment axis. They are independent: resolve each one on its own and never let one decide another.

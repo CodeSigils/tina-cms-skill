@@ -4,6 +4,8 @@ Run this checklist before advising on, or making, any change to a Tina project. 
 
 This reference is part of the runtime skill and has no path into `docs/research/`. External specifics are referenced by topic and pulled from `source-registry.md`; this file does not carry raw URLs.
 
+> Provenance: findings `API-07`, `API-08`, `API-09`, `SCHEMA-01` through `SCHEMA-07`, `CLI-05`, `CLI-11`, `DEPLOY-09`, `SELF-01` | tiers: TIER1, TIER2 (per row) | checked 2026-10-13 | recheck trigger: whenever a backing finding's recheck trigger fires, or a project's generated-artifact mode is re-inspected.
+
 ## Step 1: Identify the generated-artifact mode first
 
 The most important decision is not which files to edit; it is which artifact mode the project already runs, because that decides what may be committed and how regeneration happens. Identify the mode from repository evidence before giving any artifact advice. Do not assume; confirm from `.gitignore`, git tracking, and the build scripts.

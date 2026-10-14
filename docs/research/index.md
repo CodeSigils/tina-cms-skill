@@ -36,16 +36,17 @@ Every ID below is namespaced by concern and appears in its owning topic file.
 | INST-13 | TIER1 | references/version-registry.md no-invented-CVE rule | 2026-10-14 | installation.md |
 | INST-14 | TIER1 | references/version-registry.md fresh-release and no-`@latest` rule | 2026-10-14 | installation.md |
 | CLI-01 | TIER1 | CVE-2026-28792 / GHSA-8pw3-9m7f-q734 | 2026-10-13 | tina-cli.md |
-| CLI-02 | TIER1 | Official current stable line | 2026-10-13 | tina-cli.md |
+| CLI-02 | TIER1 | Official current stable line (re-verified against npm 2026-10-14) | 2026-10-14 | tina-cli.md |
 | CLI-03 | TIER1 | tinacms/tinacms issue #6364 | 2026-10-13 | tina-cli.md |
 | CLI-04 | TIER1 | tinacms/tinacms issue #6361 | 2026-10-13 | tina-cli.md |
 | CLI-05 | TIER1 | Official build-ordering documentation | 2026-10-13 | tina-cli.md |
 | CLI-06 | TIER2 | genericservice/claude-skills tina-schema-sync | 2026-10-13 | tina-cli.md |
 | CLI-07 | TIER1 | Official CLI flags and subcommands | 2026-10-13 | tina-cli.md |
 | CLI-08 | TIER1 | Official ESM-only package line | 2026-10-13 | tina-cli.md |
-| CLI-09 | TIER1 | Official legacy v4 package line | 2026-10-13 | tina-cli.md |
+| CLI-09 | TIER1 | Official separate package lines: tinacms 3.x and @tinacms/cli 4.x (no tinacms v4) | 2026-10-14 | tina-cli.md |
 | CLI-10 | TIER1 | Official CLI overview package scope (`@tinacms/cli`) versus the `tinacms` runtime package | 2026-10-13 | tina-cli.md |
 | CLI-11 | TIER1 | Official dev-versus-build workflow guidance | 2026-10-13 | tina-cli.md |
+| CLI-12 | TIER1 | npm re-verification 2026-10-14: @tinacms/cli current stable 4.0.2 (2.1.8 is the security floor, not the line) | 2026-10-14 | tina-cli.md |
 | SCHEMA-01 | TIER1 | tinacms/tinacms issue #6345 | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-02 | TIER1 | tinacms/tinacms issue #6346 | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-03 | TIER1 | Official collections and fields reference | 2026-10-13 | schema-and-collections.md |

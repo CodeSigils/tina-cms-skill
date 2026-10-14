@@ -242,11 +242,13 @@ async function main() {
   }
 
   const description = readFileSync(join(PAYLOAD_DIR, "SKILL.md"), "utf8");
-  const controller = new AbortController();
   const results = {};
   const failures = [];
+  const scenarioTimeoutMs = Number(process.env.SCENARIO_TIMEOUT_MS ?? 180000);
 
   for (const scenario of matrix.scenarios) {
+    const controller = new AbortController();
+    const timer = setTimeout(() => controller.abort(), scenarioTimeoutMs);
     try {
       const { prompt, result, judge } = await runScenario(provider, scenario, payload, description, controller.signal);
       results[scenario.id] = { prompt, result, judge, pass: judge.pass };
@@ -256,6 +258,8 @@ async function main() {
       results[scenario.id] = { prompt: scenarioPrompt(scenario), result: "", judge: { pass: false, reason: `error: ${err.message}`, violated: [] }, pass: false };
       console.log(`FAIL ${scenario.id} - error: ${err.message}`);
       failures.push(scenario.id);
+    } finally {
+      clearTimeout(timer);
     }
   }
 

@@ -1,5 +1,7 @@
 # Version registry
 
+> Provenance: findings `CLI-01` through `CLI-04`, `CLI-07`, `CLI-08`, `CLI-12`, `INST-01` through `INST-06`, `INST-08` through `INST-14`, `SCHEMA-01`, `SCHEMA-02`, `SCHEMA-05`, `SELF-01`, `SELF-02`, `STYLE-02`, `CLOUD-01`, `CLOUD-02` | tiers: TIER1, TIER2, TIER3, TIER4 (per row) | checked 2026-10-13, refreshed 2026-10-14 | recheck trigger: on every new `tinacms` or `@tinacms/cli` minor or patch, when a new advisory raises a floor, or when a row passes its freshness window.
+
 This is a runtime reference for the skill. It holds the dated version floors,
 known-bad windows, and recent change history that version-dependent advice must
 be checked against. When a task depends on a Tina, Next, React, or Node version,
@@ -22,18 +24,18 @@ Rules for this file:
 - Treat a freshly published release (younger than about a week) with caution
   unless it is a CVE fix.
 
-## A. Current stable line (checked 2026-10-13)
+## A. Current stable line (checked 2026-10-14)
 
 | line | value | checked date | recheck trigger |
 | --- | --- | --- | --- |
-| `tinacms` stable line | 3.14.4 | 2026-10-13 | Recheck on every new `tinacms` minor or patch |
-| `@tinacms/cli` stable line | 2.1.8 or newer on the 2.1.x line | 2026-10-13 | Recheck on every new `@tinacms/cli` minor or patch |
+| `tinacms` stable line | 3.14.4 | 2026-10-14 | Recheck on every new `tinacms` minor or patch |
+| `@tinacms/cli` stable line | 4.0.2 | 2026-10-14 | Recheck on every new `@tinacms/cli` major, minor, or patch; `2.1.8` is the security floor (`CLI-01`), not the current line |
 
 ## B. Security floors (monotonic, checked 2026-10-13)
 
 | package | floor | reason / evidence | checked date | recheck trigger |
 | --- | --- | --- | --- | --- |
-| `tinacms` | >= 3.3.x | Aligns with the patched CLI line and the schema fixes below | 2026-10-13 | Recheck when a new advisory names a higher floor |
+| `tinacms` | >= 3.3.1 | List-field regression (#6345, #6346) and filename/lock divergence (#6364, #6361) fixes landed in 3.3.1 | 2026-10-14 | Recheck when a new advisory names a higher floor |
 | `@tinacms/cli` | >= 2.1.8 | CVE-2026-28792 / GHSA-8pw3-9m7f-q734 (drive-by and path traversal in older versions) | 2026-10-13 | Recheck on any new advisory or a higher patched version |
 | `next` | >= 16.0.10 | Security patches for the Next 16 line | 2026-10-13 | Recheck when Next ships a new patch floor |
 | `react` / `react-dom` | >= 19.0.x | Required by the current Tina 3.x and Next 16 pairing | 2026-10-13 | Recheck when the supported React major moves |
@@ -51,7 +53,7 @@ Rules for this file:
 | Self-hosted examples | the repository's self-hosted examples are acknowledged as out of date (#6365) | Cross-check every step against current docs, do not trust the example repos alone | 2026-10-13 | Recheck when the examples are refreshed |
 | Module system | the current Tina line is ESM-only | A CommonJS build setup will not resolve the packages; set `"type": "module"` or use `.ts` | 2026-10-13 | Recheck if a CJS build is reintroduced |
 | Config location | the config moved from `.tina/` to `tina/` | Advising against the wrong path fails; detect the actual location first | 2026-10-13 | Recheck if the config location moves again |
-| Legacy package line | a v4 legacy package line exists alongside the 3.x line | Do not mix the legacy line with the current line; confirm which line the repo is on | 2026-10-13 | Recheck when the legacy line is retired |
+| Separate package lines | `tinacms` and `@tinacms/cli` sit on separate release lines (`tinacms` 3.x, `@tinacms/cli` 4.x); there is no `tinacms` v4 | Do not assume the two packages share a major version; read the current line for each from section A before pinning | 2026-10-14 | Recheck when either package's major line moves |
 | Media manager | media upload and delete can report an error while the operation succeeds in the background (#6325) | Confirm actual state before retrying; avoid duplicate uploads | 2026-10-13 | Recheck when the media manager is fixed |
 | Reference field typing | a reference field across collections with shared field names requires the shared fields to share a type (community-sourced, see research record) | Conflicting types cause GraphQL schema errors | 2026-10-13 | Recheck against `reference/types/reference` before relying on it |
 | Admin sub-path | loading admin assets under a sub-path has known issues, even with `basePath` | Deploy admin at the domain root or its own subdomain | 2026-10-13 | Recheck when sub-path support changes |

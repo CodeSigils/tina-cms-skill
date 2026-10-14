@@ -96,7 +96,7 @@ def main() -> int:
         for resolved_ref in refs:
             if resolved_ref != "HEAD" or refs != ["HEAD"]:
                 hashes.extend(commits(resolved_ref))
-    except subprocess.CalledProcessError as err:
+    except (subprocess.CalledProcessError, FileNotFoundError) as err:
         print(
             f"check-commit-messages: could not run: git failed for {resolved_ref!r}: {err}",
             file=sys.stderr,
@@ -111,7 +111,7 @@ def main() -> int:
                 continue
             seen.add(commit)
             errors.extend(check_commit(commit))
-    except subprocess.CalledProcessError as err:
+    except (subprocess.CalledProcessError, FileNotFoundError) as err:
         print(f"check-commit-messages: could not run: git failed: {err}", file=sys.stderr)
         return 2
 

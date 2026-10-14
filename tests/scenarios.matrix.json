@@ -1,7 +1,7 @@
 {
   "schema_version": 1,
   "skill_name": "tina-cms",
-  "note": "Deterministic scenario matrix for the BEHAVIORAL suite. The runner is LLM-judged and NOT deterministic; this file is the frozen list of cases (prompt, repo evidence, expected observable decision, prohibited stale advice). Baseline results live in tests/scenarios.baseline.json and are the recorded output of the first full green run.",
+  "note": "Frozen scenario matrix for the BEHAVIORAL suite. The runner is LLM-judged and NOT deterministic; this file is the frozen list of cases (prompt, repo evidence, expected observable decision, prohibited stale advice). Baseline results live in tests/scenarios.baseline.json and are the recorded output of the first full green run.",
   "scenarios": [
     {
       "id": "core-setup",
