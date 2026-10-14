@@ -120,6 +120,13 @@ maintenance triggers. Do not reintroduce a changelog.
 A change that adds a capability or a runtime reference is a roadmap event, not
 only a commit:
 
+A capability moves through a fixed order: research and record findings, open a
+roadmap Milestone whose scope names the capability and points at the research
+topic file, build the runtime reference(s) and route them from SKILL.md, then
+record a `Shipped` row with the landing date and commit range. Detailed concerns,
+caveats, and recommendations live in the research topic file and the runtime
+reference, not in this roadmap.
+
 - When a capability begins, add a Milestone phase to `docs/roadmap.md` describing
   its scope.
 - When it lands, add a `Shipped` row with the landing date and the commit range,
