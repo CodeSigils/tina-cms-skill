@@ -17,6 +17,19 @@ The repository has exactly two boundaries:
 The dependency is one-way: references are distilled **from** `docs/research/`.
 The reverse is never allowed.
 
+## Orient Before You Change
+
+Before starting any change, read [`docs/roadmap.md`](docs/roadmap.md) (Milestones,
+`Shipped`, and `Backlog`) and [`docs/research/index.md`](docs/research/index.md)
+for the project's current state.
+
+- Check the `Backlog` so you do not redo planned or deferred work; a parked item
+  (for example, one blocked on a missing provider) is deliberate, not forgotten.
+- Confirm against `Shipped` what has already landed, and keep an item's ID when
+  moving it forward.
+- At phase close, move a landed `Backlog` item to `Shipped` with its landing date
+  (see the phase-close gate below).
+
 ## Editing Rules
 
 - Never link `docs/research/` from a runtime file. The runtime payload must not
