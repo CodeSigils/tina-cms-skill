@@ -29,6 +29,12 @@ Every ID below is namespaced by concern and appears in its owning topic file.
 | INST-06 | TIER4 | jezweb-derived (excluded entry) Node starter observation | 2026-10-13 | installation.md |
 | INST-07 | TIER2 | Verified-community install guidance | 2026-10-13 | installation.md |
 | INST-08 | TIER2 | genericservice/claude-skills nextjs-tinacms floors table | 2026-10-13 | installation.md |
+| INST-09 | TIER1 | references/version-registry.md monotonic-floor rule; CLI-01 | 2026-10-14 | installation.md |
+| INST-10 | TIER3 | Version-policy mechanism; version-registry.md sections B/C (no deny list present) | 2026-10-14 | installation.md |
+| INST-11 | TIER3 | Version-policy mechanism (tri-state staleness) | 2026-10-14 | installation.md |
+| INST-12 | TIER1 | references/version-registry.md target-versus-evidence rule | 2026-10-14 | installation.md |
+| INST-13 | TIER1 | references/version-registry.md no-invented-CVE rule | 2026-10-14 | installation.md |
+| INST-14 | TIER1 | references/version-registry.md fresh-release and no-`@latest` rule | 2026-10-14 | installation.md |
 | CLI-01 | TIER1 | CVE-2026-28792 / GHSA-8pw3-9m7f-q734 | 2026-10-13 | tina-cli.md |
 | CLI-02 | TIER1 | Official current stable line | 2026-10-13 | tina-cli.md |
 | CLI-03 | TIER1 | tinacms/tinacms issue #6364 | 2026-10-13 | tina-cli.md |

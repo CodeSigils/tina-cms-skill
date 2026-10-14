@@ -64,3 +64,53 @@ Re-run this session when any of the following happens: a new `tinacms` or
 source-registry or version-registry row passes its freshness window; a
 deployment-options page is added or removed; or a TinaDocs OpenAPI compatibility
 area is exercised against a real target.
+
+## Session 2026-10-14: version policy and the check-versions contract
+
+### Packages researched
+
+- No new package releases were researched in this session. It records the
+  version-policy mechanisms and the checker contract, not new release data.
+
+### Sources
+
+- `skills/tina-cms/references/version-registry.md`: the in-repo authoritative
+  floors (section B) and known-bad windows/constraints (section C), plus its
+  version-policy rules. Consumed by `scripts/check-versions.mjs`; not copied.
+- The existing tiered findings in `index.md` (`CLI-01`, `INST-01`, `INST-02`,
+  `SCHEMA-01`, and the rest), which the new findings restate or operationalize
+  rather than replace.
+- `tests/fixtures/versions/*.json`: the version fixtures (current, below-floor,
+  bad-window) used by both `tests/check-skill.mjs` and `scripts/check-versions.mjs`.
+
+### Method
+
+- `scripts/check-versions.mjs` re-parses the floors and windows from
+  `references/version-registry.md` at run time; no second copy of the data was
+  created. It resolves a target project's installed versions from `package.json`,
+  the lockfile (`package-lock.json`, `pnpm-lock.yaml`, `yarn.lock`), and Tina
+  artifacts (`tina/tina-lock.json`, `tina/__generated__/`), preferring the
+  resolved lockfile version over the declared range.
+- The checker's exit contract is tri-state (0 clean, 1 findings, 2
+  could-not-run) and its staleness handling is tri-state (stale fails, unknown
+  never fails). Both mirror the established skill convention.
+- The version-policy facts were recorded as findings INST-09 through INST-14 and
+  registered once each in `index.md`. The fourteen jezweb-derived findings were
+  already registered (see the mapping in `index.md`) and were not duplicated.
+
+### What was not verified / gaps found
+
+- GAP: `references/version-registry.md` does not carry an explicit exact-version
+  blocked-versions deny list, only floors and range-based known-bad windows. The
+  checker parses a deny list when the registry provides one; with the current
+  registry it is empty. Recorded as INST-10 and as a recheck trigger. The
+  registry is owned by an earlier todo and was not edited.
+- No new CVE, vulnerable range, or "patched" version was inferred or invented;
+  only data already recorded in the registry was used.
+
+### Next-research trigger
+
+- As in the 2026-10-13 session; additionally, re-run when the registry gains an
+  explicit blocked-versions deny list, or when a real release-date field is
+  added (which would let the `@latest` caution become a computed check instead of
+  a static note).
