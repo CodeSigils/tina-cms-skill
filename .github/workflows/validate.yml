@@ -35,7 +35,17 @@ jobs:
           fetch-depth: 0
       - name: Check commit message policy
         run: |
-          RANGE="${{ github.event.pull_request.base.sha || github.event.before }}..HEAD"
+          base="${{ github.event.pull_request.base.sha }}"
+          before="${{ github.event.before }}"
+          if [ -n "$base" ]; then
+            RANGE="$base..HEAD"
+          elif [ -n "$before" ] && [ "$before" != "0000000000000000000000000000000000000000" ]; then
+            RANGE="$before..HEAD"
+          else
+            # First branch push: no prior ref. Use the full HEAD SHA, not the
+            # literal string HEAD (the checker treats that as tip-only).
+            RANGE="$(git rev-parse HEAD)"
+          fi
           if git rev-parse "$RANGE" >/dev/null 2>&1; then
             python3 scripts/check_commit_messages.py "$RANGE"
           else
