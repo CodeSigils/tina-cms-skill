@@ -28,6 +28,7 @@ Domain load triggers, read after the core references above and routed by the sur
 - Read `references/schema-and-content.md` when the task authors or changes a collection, field, template, or frontmatter content, or validates that config and content still agree.
 - Read `references/content-api-and-deployment.md` when the task touches the content backend (local files, TinaCloud, self-hosted), the generated client and lock artifacts, the data layer or GraphQL reads, or a deployment target.
 - Read `references/ui-and-customization.md` when the task touches how a surface renders or is styled: public-site rendering, the Tina admin, contextual editing, or a custom admin field UI.
+- Read `references/tinadocs-openapi-and-styling.md` only when a TinaDocs documentation site or an API-schema (OpenAPI spec) collection is actually present; it does not apply to an ordinary TinaCMS GraphQL content task.
 
 ## Detect TinaCMS In The Repo (First Hop)
 

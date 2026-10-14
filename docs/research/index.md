@@ -79,6 +79,12 @@ Every ID below is namespaced by concern and appears in its owning topic file.
 | TDOCS-02 | TIER1 | Official TinaDocs scope | 2026-10-13 | tinadocs-openapi.md |
 | TDOCS-03 | TIER4 | TinaDocs OpenAPI compatibility areas, not independently verified | 2026-10-13 | tinadocs-openapi.md |
 | TDOCS-04 | TIER3 | TinaDocs styling documentation | 2026-10-13 | tinadocs-openapi.md |
+| TDOCS-05 | TIER1 | Official TinaDocs scope (gating on a real TinaDocs surface) | 2026-10-13 | tinadocs-openapi.md |
+| TDOCS-06 | TIER1 | Official TinaDocs OpenAPI spec collection and inline-versus-generated usage | 2026-10-13 | tinadocs-openapi.md |
+| TDOCS-07 | TIER1 | Official TinaDocs page generation (save-triggered regeneration) | 2026-10-13 | tinadocs-openapi.md |
+| TDOCS-08 | TIER1 | Official TinaDocs API navigation templates | 2026-10-13 | tinadocs-openapi.md |
+| TDOCS-09 | TIER1 | Official TinaDocs theming and global stylesheet surface | 2026-10-13 | tinadocs-openapi.md |
+| TDOCS-10 | TIER1 | Reachability check of the TinaDocs documentation topics | 2026-10-13 | tinadocs-openapi.md |
 | STYLE-01 | TIER1 | Official styling and contextual-editing guidance | 2026-10-13 | styling.md |
 | STYLE-02 | TIER1 | tinacms/tinacms issue #6325 | 2026-10-13 | styling.md |
 | STYLE-03 | TIER1 | Official fields and object-field documentation | 2026-10-13 | styling.md |
