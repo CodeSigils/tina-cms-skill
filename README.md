@@ -12,7 +12,7 @@ project before it advises, then routes to bounded, source-backed guidance.
 route to the bounded reference for that surface, and check installed versions
 before giving version-dependent advice.
 
-Tina is not one surface. A single repository can combine the TinaCMS content
+Tina is not one surface. A single repository can combine the [TinaCMS](https://tina.io) content
 framework, a content backend (local files, TinaCloud, or self-hosted), the public
 site, a custom admin, and an optional TinaDocs API-documentation site — and they
 do not share one runtime contract. The skill's first job is always to find out
@@ -212,6 +212,12 @@ scripts/               # version checker and commit-message checker
 .github/workflows/     # validation and scheduled freshness workflows
 .githooks/             # optional pre-commit hook
 ```
+
+## Official Tina Links
+
+- [Tina](https://tina.io) — the official TinaCMS site.
+- [Tina documentation](https://tina.io/docs) — the official TinaCMS docs.
+- [Tina license](https://github.com/tinacms/tinacms/blob/main/LICENSE) — Apache-2.0.
 
 ## See Also
 
