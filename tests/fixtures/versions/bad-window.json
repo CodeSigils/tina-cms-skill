@@ -1,0 +1,11 @@
+{
+  "note": "tinacms 3.x inside the 3.0.x-3.2.x list-field regression window. Any version in that window is also below the >= 3.3.x floor, so both findings are expected.",
+  "versions": {
+    "tinacms": "3.2.1",
+    "@tinacms/cli": "2.1.8"
+  },
+  "expect": {
+    "below_floor": ["tinacms"],
+    "bad_window": ["tinacms"]
+  }
+}

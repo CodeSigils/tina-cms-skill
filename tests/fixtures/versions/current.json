@@ -1,0 +1,15 @@
+{
+  "note": "Current stable line and floors as recorded in references/version-registry.md (checked 2026-10-13). No floor or window finding is expected.",
+  "versions": {
+    "tinacms": "3.14.4",
+    "@tinacms/cli": "2.1.8",
+    "next": "16.0.10",
+    "react": "19.0.0",
+    "react-dom": "19.0.0",
+    "node": "20.9.0"
+  },
+  "expect": {
+    "below_floor": [],
+    "bad_window": []
+  }
+}

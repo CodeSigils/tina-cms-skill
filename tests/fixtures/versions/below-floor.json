@@ -1,0 +1,11 @@
+{
+  "note": "@tinacms/cli below the CVE-2026-28792 floor (>= 2.1.8); tinacms itself is current. Expect a below-floor finding for @tinacms/cli only.",
+  "versions": {
+    "tinacms": "3.14.4",
+    "@tinacms/cli": "2.0.9"
+  },
+  "expect": {
+    "below_floor": ["@tinacms/cli"],
+    "bad_window": []
+  }
+}
