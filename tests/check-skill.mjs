@@ -462,6 +462,55 @@ function checkDocumentationDrift(findings, root) {
   }
 }
 
+/**
+ * Every runtime reference must carry a provenance header, and every finding ID
+ * it cites (including `X-01 through X-11` ranges) must be registered in
+ * docs/research/index.md. This backs the "no reference-only edits" and "cite a
+ * registered finding" rules for the runtime payload, which the topic-file checks
+ * do not cover.
+ */
+function checkReferenceProvenanceIds(findings, root) {
+  const refDir = join(root, "skills", "tina-cms", "references");
+  const indexFile = join(root, "docs", "research", "index.md");
+  if (!existsSync(indexFile)) return; // reported by checkFindingIds
+
+  const rows = rowsUnderHeading(readText(indexFile).split("\n"), "## Finding-ID registry");
+  const registered = new Set();
+  for (const row of rows) {
+    const id = (row.cells[0] ?? "").replace(/`/g, "").trim();
+    if (/^(?:INST|CLI|SCHEMA|API|DEPLOY|CLOUD|SELF|TDOCS|STYLE)-\d{2,}$/.test(id)) registered.add(id);
+  }
+
+  const rangeRe =
+    /\b(INST|CLI|SCHEMA|API|DEPLOY|CLOUD|SELF|TDOCS|STYLE)-(\d{2,})\s+through\s+(INST|CLI|SCHEMA|API|DEPLOY|CLOUD|SELF|TDOCS|STYLE)-(\d{2,})\b/g;
+
+  for (const file of readdirSync(refDir).filter((f) => f.endsWith(".md")).sort()) {
+    const text = readText(join(refDir, file));
+    const header = /^>?\s*Provenance:(.*)$/m.exec(text);
+    if (!header) {
+      findings.push({ code: "j.header", message: `references/${file} has no provenance header` });
+      continue;
+    }
+    const cited = new Set();
+    const frag = header[1].replace(/`/g, ""); // ranges appear as `X-01` through `X-14`
+    for (const m of frag.matchAll(ID_RE)) cited.add(m[0]);
+    for (const m of frag.matchAll(rangeRe)) {
+      if (m[1] !== m[3]) continue;
+      const width = m[2].length;
+      for (let n = Number(m[2]); n <= Number(m[4]); n++) {
+        cited.add(`${m[1]}-${String(n).padStart(width, "0")}`);
+      }
+    }
+    for (const id of cited) {
+      if (!registered.has(id))
+        findings.push({
+          code: "j.unregistered",
+          message: `references/${file} cites ${id}, which is not registered in index.md`,
+        });
+    }
+  }
+}
+
 // ---- entry point ---------------------------------------------------------
 
 function main() {
@@ -484,6 +533,7 @@ function main() {
     checkFindingIds(findings, root);
     checkPortableCopy(findings, root);
     checkDocumentationDrift(findings, root);
+    checkReferenceProvenanceIds(findings, root);
   } catch (err) {
     const message = err instanceof CheckError ? err.message : `unexpected failure: ${err.message}`;
     process.stderr.write(`check-skill: could not run: ${message}\n`);
@@ -492,7 +542,7 @@ function main() {
 
   findings.sort((a, b) => a.code.localeCompare(b.code) || a.message.localeCompare(b.message));
   if (findings.length === 0) {
-    process.stdout.write("check-skill: clean (9 checks passed)\n");
+    process.stdout.write("check-skill: clean (10 checks passed)\n");
     process.exit(0);
   }
   process.stdout.write(`check-skill: ${findings.length} finding(s)\n`);
