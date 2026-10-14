@@ -30,6 +30,25 @@ for the project's current state.
 - At phase close, move a landed `Backlog` item to `Shipped` with its landing date
   (see the phase-close gate below).
 
+## Research Before You Write
+
+A new or changed finding, reference, or version claim is grounded in a primary
+source before it is written, never reconstructed from memory:
+
+- Cite at least one source with a URL and a checked date. An official TinaCMS
+  documentation page, the `tinacms/tinacms` issue tracker, npm, or the packaged
+  source is acceptable. Record it as the finding's source and, when it is a
+  documentation page, as a `skills/tina-cms/references/source-registry.md` row.
+- If a claim cannot be verified against a primary source, record it as TIER4 and
+  keep it out of a runtime reference. Say the link or behavior is unverified
+  instead of asserting it.
+- No version floor, known-bad window, or "current stable" claim is written from
+  memory. Read it from the dated
+  `skills/tina-cms/references/version-registry.md`, and re-verify against npm
+  before changing it.
+- `tests/check-skill.mjs` fails a runtime reference whose provenance header
+  cites a finding ID that is not registered in `docs/research/index.md`.
+
 ## Editing Rules
 
 - Never link `docs/research/` from a runtime file. The runtime payload must not
@@ -95,6 +114,18 @@ name. The commit history is the canonical change record: every commit body
 carries `what:` then `why:`. Research and decision records hold detailed
 rationale, and `docs/roadmap.md` tracks durable milestones, phase status, and
 maintenance triggers. Do not reintroduce a changelog.
+
+## Roadmap And Capabilities
+
+A change that adds a capability or a runtime reference is a roadmap event, not
+only a commit:
+
+- When a capability begins, add a Milestone phase to `docs/roadmap.md` describing
+  its scope.
+- When it lands, add a `Shipped` row with the landing date and the commit range,
+  and mark the phase complete once its documentation gate is done.
+- Extend an existing phase instead of inventing a new one when the work belongs
+  to it, and keep a `Backlog` item's ID when it moves forward.
 
 ## Working Plan Is Not Shipped
 

@@ -64,6 +64,7 @@ when any of the following happens:
   passes its freshness window (default TTL 120 days);
 - a TinaCMS documentation page is renamed, moved, or removed;
 - the deployment-options family changes (a target is added or dropped);
+- a new skill capability or runtime reference is added;
 - a TinaDocs OpenAPI compatibility area is exercised against a real target.
 
 The scheduled freshness workflow resolves the current stable `tinacms` and
