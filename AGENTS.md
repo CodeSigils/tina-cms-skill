@@ -45,6 +45,10 @@ for the project's current state.
   `docs/research/index.md`, which also owns the tier definitions. A finding ID
   that appears in a topic file but is not registered (orphan), or is registered
   more than once (duplicate), is a defect.
+- Any change to a `docs/research/` topic file updates `docs/research/index.md`
+  in the same commit, so the finding and its registration always move together.
+  `node tests/check-skill.mjs` fails if a topic file cites an unregistered ID or
+  a registered ID is missing from its owning topic file.
 - Never lower a version floor, invent a CVE, a vulnerable range, or a "patched"
   version, present a single "current version" as timeless truth, or recommend
   `@latest` as a repair default. Floors and windows live only in the dated
