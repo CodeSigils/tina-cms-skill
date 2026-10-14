@@ -42,9 +42,10 @@ which surface the task touches.
   actually present; regeneration is a mutation boundary.
 
 It also carries two dated, provenance-checked registries the agent reads at use:
-an official docs-link bank (`references/source-registry.md`) and a
+an official docs-link bank
+([`references/source-registry.md`](skills/tina-cms/references/source-registry.md)) and a
 version registry of security floors and known-bad windows
-(`references/version-registry.md`). When a project sits below a floor or inside a
+([`references/version-registry.md`](skills/tina-cms/references/version-registry.md)). When a project sits below a floor or inside a
 known-bad window, the skill says so — with the exact installed versions and a
 safe path — before giving version-dependent advice.
 
@@ -183,7 +184,7 @@ python3 scripts/check_commit_messages.py HEAD
   registration, and the copied payload). Exit `0` clean, `1` findings,
   `2` could-not-run.
 - `scripts/check-versions.mjs` compares a target's installed Tina/Next/React/Node
-  versions against `references/version-registry.md` and reports below-floor,
+  versions against [`references/version-registry.md`](skills/tina-cms/references/version-registry.md) and reports below-floor,
   known-bad-window, and blocked-version findings (tri-state exit codes).
 - `tests/run-scenarios.mjs` runs the LLM-judged behavioral suite; with no model
   provider configured it degrades to exit `2` ("could not run").
