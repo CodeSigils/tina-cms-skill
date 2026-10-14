@@ -19,8 +19,9 @@ do not share one runtime contract. The skill's first job is always to find out
 which surface the task touches.
 
 If you are an agent working in this repository, read [`AGENTS.md`](AGENTS.md)
-first. If you are using the installed skill, its entrypoint is
-[`skills/tina-cms/SKILL.md`](skills/tina-cms/SKILL.md).
+first, and [`docs/roadmap.md`](docs/roadmap.md) for a picture of the project's
+current state and direction. If you are using the installed skill, its
+entrypoint is [`skills/tina-cms/SKILL.md`](skills/tina-cms/SKILL.md).
 
 ## Official Tina Links
 
