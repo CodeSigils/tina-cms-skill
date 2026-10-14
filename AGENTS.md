@@ -118,9 +118,10 @@ starting the next one:
 
 1. Update every affected authoring document: the relevant `docs/research/` topic
    file and its provenance header, `docs/research/index.md` (registrations), the
-   `docs/research/research-log.md` session entry, `docs/roadmap.md` phase status
-   and acceptance evidence, and any runtime reference distilled from a changed
-   finding.
+   `docs/research/research-log.md` session entry, `docs/roadmap.md` (phase status,
+   acceptance evidence, the `Shipped` table, and moving any landed backlog item
+   from `Backlog` to `Shipped` with its landing date), and any runtime reference
+   distilled from a changed finding.
 2. Update checked dates where evidence was rechecked and verify affected
    relative Markdown links.
 3. Record any intentionally unchanged document with the reason in the handoff.

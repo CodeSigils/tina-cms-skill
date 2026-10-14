@@ -32,15 +32,26 @@ The skill is complete when these properties hold:
 Phases are complete when their implementation and their documentation gate are
 both done.
 
-| Phase | Scope | Status |
-| --- | --- | --- |
-| 1. Payload and registries | Portable `skills/tina-cms/` payload; project-inspection routing and conventions checklist; dated source registry (docs-link bank) and version registry (floors, windows, history). | Complete |
-| 2. Core guidance | Schema/content, CLI, content-API/backend and deployment, UI/CSS, and the TinaDocs OpenAPI module — each distilled from research findings with a provenance header. | Complete |
-| 3. Verification and version awareness | Deterministic structural checker with fixtures; LLM-judged behavioral scenario suite with a recorded baseline; `scripts/check-versions.mjs`; research findings recorded and registered. | Complete |
-| 4. Packaging and anti-drift CI | README, LICENSE, SECURITY, AGENTS, this roadmap; validation workflow; scheduled freshness workflow; commit-message checker and pre-commit hook. | Complete |
+| Phase | Scope | Status | Completed |
+| --- | --- | --- | --- |
+| 1. Payload and registries | Portable `skills/tina-cms/` payload; project-inspection routing and conventions checklist; dated source registry (docs-link bank) and version registry (floors, windows, history). | Complete | 2026-10-14 |
+| 2. Core guidance | Schema/content, CLI, content-API/backend and deployment, UI/CSS, and the TinaDocs OpenAPI module — each distilled from research findings with a provenance header. | Complete | 2026-10-14 |
+| 3. Verification and version awareness | Deterministic structural checker with fixtures; LLM-judged behavioral scenario suite with a recorded baseline; `scripts/check-versions.mjs`; research findings recorded and registered. | Complete | 2026-10-14 (behavioral baseline pending — see R-1) |
+| 4. Packaging and anti-drift CI | README, LICENSE, SECURITY, AGENTS, this roadmap; validation workflow; scheduled freshness workflow; commit-message checker and pre-commit hook. | Complete | 2026-10-14 |
 
 Release history: no tagged release yet. The repository's change record is the
 commit history; a release exists only when a tag is published.
+
+## Shipped
+
+Milestone-level record of what has landed. Granularity stays at feature or
+milestone level — per-change detail lives in the commit bodies and
+`docs/research/`, never here.
+
+| Date | Item | Summary | Commits |
+| --- | --- | --- | --- |
+| 2026-10-14 | Initial implementation | Portable payload, nine references, source and version registries, research baseline, deterministic test suite, version checker, and packaging/CI layer. | `4413a1d`..`94ff3df` |
+| 2026-10-14 | Post-review fix wave | Corrected the `@tinacms/cli` current-stable line to the npm-verified 4.0.2, added reference provenance headers, tightened the `tinacms` floor to 3.3.1, and cleared review minors. | `b973d57` |
 
 ## Maintenance Triggers
 
@@ -65,15 +76,16 @@ and always records the run in `docs/research/research-log.md`.
 Next scheduled recheck: **2027-02-10** (120 days after the 2026-10-13/14 research
 sessions). Bring it forward on any maintenance trigger above.
 
-## Future Directions
+## Backlog
 
-Deferred until a concrete need or target exercise makes them worthwhile:
+Deferred until a concrete need or target exercise makes them worthwhile. A
+landed item moves to [Shipped](#shipped) with its landing date and keeps its ID.
 
-- a vendored structural validator so `quick_validate.py` parity runs inside CI
-  without the Codex skill-creator;
-- an explicit exact-version blocked-versions deny list in the version registry
-  (the checker already parses one; the registry does not yet carry it);
-- a computed fresh-release check once the registry records release dates, which
-  would replace the static `@latest` caution;
-- verified TinaDocs OpenAPI behavior (OAS version, `$ref`, manual-page
-  preservation) recorded only after a real target exercise.
+| ID | Feature | Why | Status |
+| --- | --- | --- | --- |
+| R-1 | Recorded behavioral baseline (`tests/scenarios.baseline.json`) | The LLM-judged scenario suite needs a first full green run to pin real results; blocked on a configured model provider (`SCENARIO_BASE_URL` / `SCENARIO_MODEL` / `SCENARIO_API_KEY`). | Blocked |
+| R-2 | Vendored structural validator | Gives `quick_validate.py` parity inside CI without the Codex skill-creator. | Deferred |
+| R-3 | Exact-version blocked-versions deny list | The checker already parses one; the version registry does not yet carry it. | Deferred |
+| R-4 | Computed fresh-release check | Once the registry records release dates, this replaces the static `@latest` caution. | Deferred |
+| R-5 | Verified TinaDocs OpenAPI behavior | OAS version, `$ref`, and manual-page preservation should be recorded only after a real target exercise. | Deferred |
+| R-6 | Evidence-file naming alignment | Reconcile the build plan's `<attemptDir>/task-N-tina-cms-skill.<ext>` with the actual `.omo/evidence/task-N.<ext>` convention. | Deferred |

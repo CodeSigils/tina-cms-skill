@@ -149,8 +149,8 @@ Every commit has a concise imperative subject and a body with `what:` then
 `why:`; `scripts/check_commit_messages.py` enforces it. This repository keeps
 **no `CHANGELOG.md`** and no changelog file under any other name: the commit
 history is the canonical change record, `docs/research/` holds detailed
-rationale, and [`docs/roadmap.md`](docs/roadmap.md) tracks durable milestones,
-phase status, and maintenance triggers.
+rationale, and [`docs/roadmap.md`](docs/roadmap.md) tracks durable milestones, a
+shipped log, a backlog, and maintenance triggers.
 
 To enable the optional pre-commit hook:
 
@@ -164,7 +164,7 @@ git config core.hooksPath .githooks
 skills/tina-cms/       # the portable runtime payload (the only shipped artifact)
 docs/research/         # authoring-only findings: research-log, index, topic files
 docs/official-links.md # human-facing export of the docs-link bank
-docs/roadmap.md        # durable milestones and maintenance triggers
+docs/roadmap.md        # milestones, shipped log, backlog, maintenance triggers
 tests/                 # deterministic structural checker + behavioral scenarios
 scripts/               # version checker and commit-message checker
 .github/workflows/     # validation and scheduled freshness workflows
