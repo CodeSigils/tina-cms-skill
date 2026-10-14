@@ -147,3 +147,42 @@ references were updated to match it.
 ### Next-research trigger
 
 - On the next `@tinacms/cli` or `tinacms` release, and when a remote exists so the weekly freshness job can run against it.
+
+## Session 2026-10-14: cross-repo capability-governance comparison
+
+### Question
+
+Whether this repository's capability-lifecycle rule (`AGENTS.md`, "Roadmap And
+Capabilities") should be propagated to the sibling skill repositories
+`zensical-skill` and `zola-skill`.
+
+### Sources
+
+- The governance documents of `zensical-skill` and `zola-skill` (`AGENTS.md`,
+  `docs/roadmap.md`, `docs/future-capabilities.md`, `docs/README.md`), reviewed
+  2026-10-14.
+- The public study note recording the comparison: `agent-concepts-study`,
+  `2026-10-14-SYNTHESIS-capability-lifecycle-across-skill-repos.md`
+  (https://github.com/CodeSigils/agent-concepts-study).
+
+### Method
+
+- Compared how each of the three repositories governs how a new capability
+  enters: this repository states an explicit ordered lifecycle; `zensical-skill`
+  owns a capability-admission rule (five conditions) plus a roadmap after-action
+  gate and a canonical-owner rule; `zola-skill` owns a native Zola/Tera
+  capability gate plus a documentation reading matrix and a phase-close gate.
+- Checked whether either sibling lacked the ordering stated here.
+
+### Outcome
+
+- Neither sibling lacked an equivalent gate; each already owns an admission gate
+  and a phase-close or after-action gate. Propagating this repository's rule
+  would restate a rule those repositories already own, and in `zensical-skill`
+  would conflict with its canonical-owner rule and governance freeze.
+- Decision: no change to `zensical-skill` or `zola-skill`.
+
+### Next-research trigger
+
+- Re-open only if a sibling repository removes its admission or phase-close gate,
+  or if a capability is proposed here that the existing lifecycle does not cover.
