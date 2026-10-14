@@ -18,6 +18,12 @@ site, a custom admin, and an optional TinaDocs API-documentation site — and th
 do not share one runtime contract. The skill's first job is always to find out
 which surface the task touches.
 
+## Official Tina Links
+
+- [Tina](https://tina.io) — the official TinaCMS site.
+- [Tina documentation](https://tina.io/docs) — the official TinaCMS docs.
+- [Tina license](https://github.com/tinacms/tinacms/blob/main/LICENSE) — Apache-2.0.
+
 ## What The Skill Covers
 
 - **TinaCMS setup** — project initialization, package manager, build ordering,
@@ -212,12 +218,6 @@ scripts/               # version checker and commit-message checker
 .github/workflows/     # validation and scheduled freshness workflows
 .githooks/             # optional pre-commit hook
 ```
-
-## Official Tina Links
-
-- [Tina](https://tina.io) — the official TinaCMS site.
-- [Tina documentation](https://tina.io/docs) — the official TinaCMS docs.
-- [Tina license](https://github.com/tinacms/tinacms/blob/main/LICENSE) — Apache-2.0.
 
 ## See Also
 
