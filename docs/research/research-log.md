@@ -247,3 +247,51 @@ Capabilities") should be propagated to the sibling skill repositories
 
 - If the deterministic checker gains a check that a reviewer would otherwise
   perform, or if the hook set changes.
+
+## Session 2026-10-14: payload tightening and ownership audit
+
+### Question
+
+Does the runtime payload (`skills/tina-cms/`) carry duplicated guidance that
+should be consolidated, measured against the skill-creator authoring rubric
+(progressive disclosure, one owner per fact, no generic filler)?
+
+### Sources
+
+- skill-creator authoring rubric (`.codex` and opencode copies), read 2026-10-14.
+- The runtime payload itself: `SKILL.md` and all nine references, read 2026-10-14.
+- The backing findings already recorded: `SCHEMA-01` through `SCHEMA-07` and the
+  `version-registry.md` `CLI-*` / `INST-*` findings.
+
+### Method
+
+- Mapped every fact to a single owning file across the ten payload files.
+- Classified each apparent duplication as either a drift defect (a fact restated
+  outside its owner) or intentional progressive disclosure (a routing summary in
+  `SKILL.md`, a per-file boundary note, or a self-contained checklist gate).
+
+### Findings
+
+- The payload is well-factored: the ten files divide cleanly into router,
+  detection table, and one owner per domain (schema, CLI, backend/deployment,
+  UI, TinaDocs, inspection).
+- Most repetition is deliberate: the boundary note in every reference exists
+  because each reference may be loaded alone, and `conventions.md` restates
+  headline rules at checklist depth so the pre-change gate is self-contained.
+  Neither is a drift defect.
+- The one rule-level defect was `schema-and-content.md` restating version
+  windows, which the repository rule keeps only in `version-registry.md`.
+
+### Outcome
+
+- Replaced the version-window restatement in `schema-and-content.md` with a
+  pointer to `version-registry.md`; no other file changed. The provenance header
+  and boundary note are unchanged.
+- Considered a deterministic check that would flag a version floor or window
+  restated outside `version-registry.md`; deferred (false-positive risk, and the
+  single-owner rule is already stated).
+
+### Next-research trigger
+
+- Reopen if a future payload change restates a fact outside its owning file, or
+  if the skill-creator rubric changes.

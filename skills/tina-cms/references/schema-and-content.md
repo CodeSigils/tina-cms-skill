@@ -98,11 +98,9 @@ The config is executed to build the schema, so it must be deterministic:
 
 ## Version windows that touch schema work
 
-- `tinacms` 3.0.x through 3.2.x had a list-field display regression, fixed in
-  3.3.1. Treat that span as a bad window and check the project's installed
-  version in `version-registry.md` before debugging a list display.
-- Filename and lock divergence was fixed in the same 3.3.1 window, so stay on
-  3.3.1 or later.
+Floors and known-bad windows are not restated here; they are owned by
+`version-registry.md`. Read them there, and check the project's installed
+version before debugging a schema symptom such as a list-field display problem.
 
 ## Change workflow
 
