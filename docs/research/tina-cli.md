@@ -1,6 +1,6 @@
 # Tina CLI (CLI)
 
-> Provenance: findings `CLI-01` through `CLI-09` | tiers: TIER1, TIER2 (per row) | checked 2026-10-13 | recheck trigger: on every new `@tinacms/cli` or `tinacms` release, or when a documented flag or subcommand changes.
+> Provenance: findings `CLI-01` through `CLI-11` | tiers: TIER1, TIER2 (per row) | checked 2026-10-13 | recheck trigger: on every new `@tinacms/cli` or `tinacms` release, or when a documented flag or subcommand changes.
 
 ## CLI-01 (TIER1) Security floor
 
@@ -56,3 +56,18 @@ packages; set `"type": "module"` or use `.ts` config.
 
 A v4 legacy package line exists alongside the 3.x line. Do not mix the legacy
 line with the current line; confirm which line the project is on.
+
+## CLI-10 (TIER1) CLI package versus runtime package
+
+The `tinacms` command is provided by the `@tinacms/cli` package, which is
+distributed separately from the `tinacms` runtime/edit package. The two sit on
+separate release lines, and the CLI overview documentation is written for
+`@tinacms/cli`. PIN BOTH: never pin one and float the other, and never resolve
+either with `@latest`.
+
+## CLI-11 (TIER1) Dev output is not a production artifact
+
+A running `tinacms dev` process and the artifacts it emits while watching are
+development output. Production ships the `tinacms build` result, run before the
+framework build (see CLI-05). Never deploy or package a `tinacms dev` artifact
+as the production CMS.

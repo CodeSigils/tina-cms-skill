@@ -1,6 +1,6 @@
 # Content API and GraphQL (API)
 
-> Provenance: findings `API-01` through `API-06` | tiers: TIER1 (all rows) | checked 2026-10-13 | recheck trigger: when the generated client, data layer, or GraphQL reference changes, or when the `tinacms` package source is re-read.
+> Provenance: findings `API-01` through `API-09` | tiers: TIER1, TIER2 (per row) | checked 2026-10-13 | recheck trigger: when the generated client, data layer, artifact contract, or GraphQL reference changes, or when the `tinacms` package source is re-read.
 
 ## API-01 (TIER1) Generated client accuracy flag
 
@@ -38,3 +38,29 @@ generic "overview" route.
 
 `useTina` is a Client Component hook and cannot run in a Server Component.
 Confirm the component boundary before advising.
+
+## API-07 (TIER1) Generated artifacts are build output
+
+Everything under `tina/__generated__/` (or `.tina/__generated__/`) is build
+output and must never be hand-edited; edits are overwritten on the next build.
+In the official build-on-CI model the repository commits `tina/tina-lock.json`
+only and gitignores the generated directory, and the build regenerates the
+client and types before the framework compiles.
+
+## API-08 (TIER2) Hybrid pre-commit artifact policy
+
+A verified-community pattern (corroborated by the `tina-schema-sync` material,
+not an official recommendation) pre-commits the generated artifacts so the site
+can build without a fresh cloud indexing step: `tina/__generated__/`,
+`tina/tina-lock.json`, and the built `public/admin/` are committed together as
+one atomic unit so the tracked artifacts never diverge from the lockfile.
+Regenerate with `tinacms dev --noWatch --noTelemetry` (see CLI-06), and verify
+the pattern against the project before relying on it.
+
+## API-09 (TIER1) Runtime URL prefixes and request interception
+
+At runtime the CMS depends on three URL prefixes: the admin route under
+`/admin`, the preview endpoint at `/api/preview`, and (in self-hosted projects)
+the backend under `/api/tina/*`. A `proxy.ts` (Next 16+) or `middleware.ts`
+rewrite or redirect that captures one of those prefixes breaks the CMS. Read the
+interception file and report the likely cause rather than editing it blind.

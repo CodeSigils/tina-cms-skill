@@ -38,18 +38,24 @@ Every ID below is namespaced by concern and appears in its owning topic file.
 | CLI-07 | TIER1 | Official CLI flags and subcommands | 2026-10-13 | tina-cli.md |
 | CLI-08 | TIER1 | Official ESM-only package line | 2026-10-13 | tina-cli.md |
 | CLI-09 | TIER1 | Official legacy v4 package line | 2026-10-13 | tina-cli.md |
+| CLI-10 | TIER1 | Official CLI overview package scope (`@tinacms/cli`) versus the `tinacms` runtime package | 2026-10-13 | tina-cli.md |
+| CLI-11 | TIER1 | Official dev-versus-build workflow guidance | 2026-10-13 | tina-cli.md |
 | SCHEMA-01 | TIER1 | tinacms/tinacms issue #6345 | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-02 | TIER1 | tinacms/tinacms issue #6346 | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-03 | TIER1 | Official collections and fields reference | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-04 | TIER1 | Official field-type documentation | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-05 | TIER2 | Community-sourced reference-field typing note (Cogan 2.1 to 2.3) | 2026-10-13 | schema-and-collections.md |
 | SCHEMA-06 | TIER1 | Official config-determinism guidance | 2026-10-13 | schema-and-collections.md |
+| SCHEMA-07 | TIER1 | Official field `format`/`parse` transform documentation | 2026-10-13 | schema-and-collections.md |
 | API-01 | TIER1 | Official generated-client guidance and package source | 2026-10-13 | content-api-and-graphql.md |
 | API-02 | TIER1 | Official package source, useTina | 2026-10-13 | content-api-and-graphql.md |
 | API-03 | TIER1 | Official package source, tinaField | 2026-10-13 | content-api-and-graphql.md |
 | API-04 | TIER1 | Official data-layer architecture | 2026-10-13 | content-api-and-graphql.md |
 | API-05 | TIER1 | Official GraphQL queries page | 2026-10-13 | content-api-and-graphql.md |
 | API-06 | TIER1 | Official contextual-editing overview | 2026-10-13 | content-api-and-graphql.md |
+| API-07 | TIER1 | Official generated-artifact and lock-file contract | 2026-10-13 | content-api-and-graphql.md |
+| API-08 | TIER2 | genericservice/claude-skills tina-schema-sync hybrid artifact pattern | 2026-10-13 | content-api-and-graphql.md |
+| API-09 | TIER1 | Official framework request-interception guidance | 2026-10-13 | content-api-and-graphql.md |
 | DEPLOY-01 | TIER1 | Official Vercel deployment option | 2026-10-13 | deployment.md |
 | DEPLOY-02 | TIER1 | Official Netlify deployment option | 2026-10-13 | deployment.md |
 | DEPLOY-03 | TIER1 | Official GitHub Pages deployment option | 2026-10-13 | deployment.md |
@@ -58,6 +64,7 @@ Every ID below is namespaced by concern and appears in its owning topic file.
 | DEPLOY-06 | TIER1 | Official deployment-options family | 2026-10-13 | deployment.md |
 | DEPLOY-07 | TIER1 | Official Git-provider documentation and TinaCloud scope | 2026-10-13 | deployment.md |
 | DEPLOY-08 | TIER1 | Official deployment-versus-backend separation | 2026-10-13 | deployment.md |
+| DEPLOY-09 | TIER1 | Official build-environment `.env` guidance | 2026-10-13 | deployment.md |
 | CLOUD-01 | TIER2 | Community-corroborated branch handling | 2026-10-13 | tinacloud.md |
 | CLOUD-02 | TIER3 | TinaCloud breach disclosure recorded at 4.1 | 2026-10-13 | tinacloud.md |
 | CLOUD-03 | TIER1 | Official TinaCloud environment contract | 2026-10-13 | tinacloud.md |

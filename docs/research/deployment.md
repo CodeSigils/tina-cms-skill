@@ -1,6 +1,6 @@
 # Deployment (DEPLOY)
 
-> Provenance: findings `DEPLOY-01` through `DEPLOY-08` | tiers: TIER1 (all rows) | checked 2026-10-13 | recheck trigger: when a deployment-options page is added or removed, or when a host's build-source requirement changes.
+> Provenance: findings `DEPLOY-01` through `DEPLOY-09` | tiers: TIER1 (all rows) | checked 2026-10-13 | recheck trigger: when a deployment-options page is added or removed, or when a host's build-source requirement changes.
 
 ## DEPLOY-01 (TIER1) Vercel
 
@@ -48,3 +48,11 @@ self-hosted path supports only the GitHub Git Provider plus a custom
 The deployment host is not the content backend. A Vercel or Netlify site can
 serve local-file, TinaCloud, or self-hosted content. The host changes where the
 Tina build runs and which artifact mode applies, not the content source.
+
+## DEPLOY-09 (TIER1) Build environment reads .env, not .env.local
+
+The production build environment reads `.env`, not `.env.local`. Put non-secret
+build inputs (for example the public `NEXT_PUBLIC_*` values) in the file the
+build actually loads, and keep every secret out of the repository entirely; a
+`.env.local` that is never read at build time is a common cause of missing
+configuration. Confirm which file the target's build step loads before advising.

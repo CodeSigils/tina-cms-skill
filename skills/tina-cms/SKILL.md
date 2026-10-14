@@ -22,6 +22,13 @@ Load triggers:
 - Read `references/source-registry.md` when you need an official docs link or a provenance-checked, dated source. Pull the cited link from there; do not embed raw URLs.
 - Read `references/version-registry.md` when the task depends on a Tina, Next, React, or Node version, or when the repository's installed versions may sit below the security floor or inside a known-bad window.
 
+Domain load triggers, read after the core references above and routed by the surface the task touches:
+
+- Read `references/cli.md` when the task touches the `tinacms` / `@tinacms/cli` commands, dev or build flags, ports, the `audit` / `doctor` diagnostics, or version pinning.
+- Read `references/schema-and-content.md` when the task authors or changes a collection, field, template, or frontmatter content, or validates that config and content still agree.
+- Read `references/content-api-and-deployment.md` when the task touches the content backend (local files, TinaCloud, self-hosted), the generated client and lock artifacts, the data layer or GraphQL reads, or a deployment target.
+- Read `references/ui-and-customization.md` when the task touches how a surface renders or is styled: public-site rendering, the Tina admin, contextual editing, or a custom admin field UI.
+
 ## Detect TinaCMS In The Repo (First Hop)
 
 Run these scans in the target project. Strong signals confirm the skill is engaged and tell you which surface applies. Weak signals mean you may be in the wrong skill; say so instead of guessing. The full signal table, including the self-hosted backend lane and request-interception checks, is in `references/project-inspection.md`.
@@ -47,10 +54,12 @@ The routing model has three content axes plus a deployment axis. Pick one branch
 
 | Axis | Branches | Route to |
 | :--- | :--- | :--- |
-| CMS | TinaCMS framework present / absent | Present: continue. Absent: this skill does not apply; stop and say why. |
-| Content backend | local files / TinaCloud / self-hosted | `references/project-inspection.md` selects the lane; the lane then sets env, lock, and build expectations. |
+| CMS | TinaCMS framework present / absent | Present: continue; route CLI, pinning, or dev/build work to `references/cli.md` and collection, field, or content work to `references/schema-and-content.md`. Absent: this skill does not apply; stop and say why. |
+| Content backend | local files / TinaCloud / self-hosted | `references/project-inspection.md` selects the lane; the lane then sets env, lock, and build expectations. Read `references/content-api-and-deployment.md` for the lane contract, lock and generated-artifact handling, data-layer constraint, and build order. |
 | TinaDocs | present / absent | Only route to TinaDocs work when a TinaDocs site or an API-schema collection exists. Never apply TinaDocs OpenAPI steps to ordinary TinaCMS GraphQL tasks. |
-| Deployment target | Vercel / Netlify / GitHub Pages / Cloudflare Pages / Cloudflare Workers / local / other | Identify the host before advising. The host sets where `tinacms build` runs and which artifact mode applies. GitLab is an unlisted target: route it to the self-hosted path with a custom Git Provider; never present GitLab Pages as supported. |
+| Deployment target | Vercel / Netlify / GitHub Pages / Cloudflare Pages / Cloudflare Workers / local / other | Identify the host before advising. The host sets where `tinacms build` runs and which artifact mode applies; read `references/content-api-and-deployment.md` for the per-host traps. GitLab is an unlisted target: route it to the self-hosted path with a custom Git Provider; never present GitLab Pages as supported. |
+
+Rendering and styling has no dedicated axis; route it by surface with `references/ui-and-customization.md` (public-site rendering, the Tina admin, a custom admin field UI, or TinaDocs CSS), after naming which surface applies.
 
 When a routed reference does not exist yet in this skill, resolve the surface through `references/project-inspection.md` and the source registry, and flag the gap rather than improvising an answer.
 

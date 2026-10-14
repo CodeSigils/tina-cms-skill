@@ -1,6 +1,6 @@
 # Schema and collections (SCHEMA)
 
-> Provenance: findings `SCHEMA-01` through `SCHEMA-06` | tiers: TIER1, TIER2 (per row) | checked 2026-10-13 | recheck trigger: when the schema or collections reference changes, or when a new list-field or reference regression is reported.
+> Provenance: findings `SCHEMA-01` through `SCHEMA-07` | tiers: TIER1, TIER2 (per row) | checked 2026-10-13 | recheck trigger: when the schema or collections reference changes, or when a new list-field or reference regression is reported.
 
 ## SCHEMA-01 (TIER1) List-field display regression
 
@@ -47,3 +47,11 @@ at the top level of `tina/config.*`: the config is executed to build the schema,
 so non-deterministic values make builds and lock files unstable. Keep config
 imports minimal and type-only where possible; importing frontend-only code (DOM,
 hooks, component libraries) can break the config build.
+
+## SCHEMA-07 (TIER1) Field format and parse transforms
+
+A field's `format` and `parse` transforms decouple the rendered/editor value from
+the value stored on disk: `format` maps the stored value to what the editor and
+site render, and `parse` maps the edited value back to the canonical stored form
+before saving. Use them to keep the saved value in one shape while the UI shows
+another. Confirm the transform pair on the field-type page before prescribing it.
