@@ -8,6 +8,10 @@
 TinaCMS-backed repository. It identifies the actual Tina surface in the target
 project before it advises, then routes to bounded, source-backed guidance.
 
+**How it works, in one line:** inspect the repository, detect the Tina surface,
+route to the bounded reference for that surface, and check installed versions
+before giving version-dependent advice.
+
 Tina is not one surface. A single repository can combine the TinaCMS content
 framework, a content backend (local files, TinaCloud, or self-hosted), the public
 site, a custom admin, and an optional TinaDocs API-documentation site — and they
@@ -37,6 +41,44 @@ version registry of security floors and known-bad windows
 (`references/version-registry.md`). When a project sits below a floor or inside a
 known-bad window, the skill says so — with the exact installed versions and a
 safe path — before giving version-dependent advice.
+
+## How It Works
+
+Every invocation runs the same bounded loop:
+
+1. **Inspect the repository.** Read the first-hop signals — `tina/config.ts` or
+   `tina/config.tsx`, `tina/tina-lock.json`, a generated Tina client, `useTina`,
+   the content-backend environment variables, and any request-interception
+   config.
+2. **Detect the surface.** Decide which surface the task touches: the CMS, the
+   content backend (local files, TinaCloud, or self-hosted), an optional TinaDocs
+   site, and the deployment host. A deployment host is not the same thing as the
+   content backend.
+3. **Route.** Load only the bounded reference for that surface, rather than
+   answering from memory.
+4. **Check versions.** Compare the project's installed versions against the dated
+   version registry and warn — with exact versions and a safe path — before
+   giving any version-dependent advice.
+5. **Advise.** Give source-backed guidance that preserves content, lockfiles,
+   generated artifacts, and secrets.
+
+### What it looks like in practice
+
+A prompt like *"Add an image field to the posts collection"* against a project
+pinned to `@tinacms/cli` 2.0.9 first detects the Tina surface, then flags that
+the CLI is below the security floor before it discusses the schema change, and
+finally gives field guidance from the schema reference without touching
+generated artifacts or the lockfile.
+
+## What It Does Not Do
+
+- It is **not** a general Next.js, Astro, or Hugo skill. With no Tina layer it
+  does not activate.
+- It does **not** replace TinaCMS or run as a service; it is guidance only.
+- It does **not** give TinaDocs OpenAPI guidance unless a TinaDocs site or an
+  API-schema collection is actually present.
+- It does **not** edit generated artifacts or remove lockfiles, and it never
+  acquires, stores, or transmits secrets.
 
 ## The Two-Boundary Model
 
@@ -170,6 +212,19 @@ scripts/               # version checker and commit-message checker
 .github/workflows/     # validation and scheduled freshness workflows
 .githooks/             # optional pre-commit hook
 ```
+
+## See Also
+
+| Document                                                                                           | Purpose                                                                                                                                                                                       |
+| -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| [`AGENTS.md`](AGENTS.md)                                                                           | Contributor and maintainer conventions: boundaries, editing rules, and the commit message contract. This repository has no separate `CONTRIBUTING.md`; `AGENTS.md` is the contributing guide. |
+| [`SECURITY.md`](SECURITY.md)                                                                       | Security policy, scope, and reporting.                                                                                                                                                        |
+| [`LICENSE`](LICENSE)                                                                               | MIT license text.                                                                                                                                                                             |
+| [`docs/roadmap.md`](docs/roadmap.md)                                                               | Milestones, shipped log, backlog, and maintenance triggers.                                                                                                                                   |
+| [`docs/official-links.md`](docs/official-links.md)                                                 | Human-facing export of the docs-link bank.                                                                                                                                                    |
+| [`skills/tina-cms/SKILL.md`](skills/tina-cms/SKILL.md)                                             | The runtime entrypoint (router).                                                                                                                                                              |
+| [`skills/tina-cms/references/source-registry.md`](skills/tina-cms/references/source-registry.md)   | Dated official docs-link bank.                                                                                                                                                                |
+| [`skills/tina-cms/references/version-registry.md`](skills/tina-cms/references/version-registry.md) | Dated security floors and known-bad windows.                                                                                                                                                  |
 
 ## Security
 
