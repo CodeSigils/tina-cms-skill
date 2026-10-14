@@ -150,7 +150,7 @@ forces or suppresses a host's implicit-versus-manual invocation behavior.
 
 ## Runtime Payload
 
-Only `skills/tina-cms/` ships to an agent.
+Only [`skills/tina-cms/`](skills/tina-cms/) ships to an agent.
 
 ```text
 skills/tina-cms/
