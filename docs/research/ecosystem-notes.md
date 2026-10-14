@@ -39,6 +39,44 @@ Recorded installs are aggregate registry counters, not unique users; figures dif
 - That `find-skills` leads the registry reinforces that the **description** is the highest-leverage part of a skill: a discriminating name, a "use if" trigger, and explicit non-triggers. This repo's `SKILL.md` frontmatter is already checked for exactly that (check `a`).
 - Single-owner references and progressive disclosure match the published skill-authoring norms; this repo already applies both.
 
+## How the ecosystem handles single-owner (inspection, 2026-10-14)
+
+Recorded on request: a bounded inspection of four widely used skill repositories
+(read at pinned commits on 2026-10-14) asked one question — do popular skills
+**machine-enforce** "a fact lives in one file only", the rule this repository
+defers to a future deterministic check (Backlog `R-7`)?
+
+**Verdict: essentially no.** None of the four ships a check that detects a fact
+(a version floor or window, a URL, a rule) restated in a second file. Machine
+enforcement in the ecosystem covers only three narrow buckets:
+
+1. frontmatter or schema validation (a skill name/description shape check);
+2. identity uniqueness (unique skill names, unique agent display names);
+3. version single-sourcing (one manifest's version must equal another's).
+
+| Repository               | Ships a validator? | Anti-duplication / single-owner? | Evidence                                                                                                                                                                                                                            |
+| ------------------------ | ------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| vercel-labs/agent-skills | yes                | no                               | The discovery index enforces unique skill names and frontmatter shape; a build validator checks a rule file's structure. Neither compares content across files.                                                                     |
+| anthropics/skills        | yes (minimal)      | no                               | Only `skills/skill-creator/scripts/quick_validate.py` (single-file frontmatter). No CI at the repository root.                                                                                                                      |
+| mattpocock/skills        | partial            | no                               | `scripts/sync-plugin-version.mjs` keeps one version source, but no workflow runs it. Cross-file consistency (a skill listed in the README and the plugin manifest) is a written convention checked by an external tool run by hand. |
+| vercel-labs/skills (CLI) | yes                | no                               | CI tests CLI behavior. A duplicate agent display name is rejected, but duplicate skill directories are deliberately allowed.                                                                                                        |
+
+The published guidance agrees with the mechanism: the strongest statement is
+prose, from Anthropic's skill-creator — "Avoid duplication: Information should
+live in either SKILL.md or references files, not both." The agentskills.io
+specification and best-practices cover frontmatter and progressive disclosure;
+neither adds a cross-file check.
+
+**What this means here.** The single-owner check this repository defers (`R-7`)
+is not a replication of a common practice — it goes beyond what the surveyed
+repositories attempt. The ecosystem's equivalent of this rule is review, not a
+machine gate. The closest existing analogies are the uniqueness checks (unique
+names, unique agent display names), which this repository does not need because
+it ships a single skill.
+
+**Caveat.** A bounded four-repository look, not a survey; "essentially no" is a
+bounded claim about this sample, not a census.
+
 ## Caveats
 
 - All figures are aggregate registry counters, not unique users or independent choices; snapshots differ per source and date, and repeated skill IDs across hubs mean counts are not de-duplicated globally.
@@ -47,11 +85,15 @@ Recorded installs are aggregate registry counters, not unique users; figures dif
 
 ## Sources
 
-| Source                                      | URL                                                   | Method    | Notes                                                                          |
-| ------------------------------------------- | ----------------------------------------------------- | --------- | ------------------------------------------------------------------------------ |
-| Vercel, "State of agent skills"             | https://vercel.com/blog/state-of-agent-skills         | docs      | Registry scale, concentration, and category distribution. Verified 2026-10-14. |
-| skills.sh directory                         | https://www.skills.sh/                                | docs      | Live leaderboard of installed skills. Verified 2026-10-14.                     |
-| Linkly AI, most-installed skills            | https://linkly.ai/skills/most-installed               | community | Cross-hub install counts; open dataset under CC BY 4.0. Verified 2026-10-14.   |
-| SkillSignal, "Top 100 Agent Skills in 2026" | https://skill-signal.org/reports/top-100-agent-skills | community | Leaderboard analysis separating adoption from quality. Verified 2026-10-14.    |
-| olshansky, skills.sh ecosystem dashboard    | https://skills-dashboard.olshansky.info/              | community | Distribution and publisher views over skills.sh data. Verified 2026-10-14.     |
-| LinklyAI/best-skills (GitHub)               | https://github.com/LinklyAI/best-skills               | community | Daily-updated CSV rankings across hubs. Verified 2026-10-14.                   |
+| Source                                      | URL                                                   | Method    | Notes                                                                                             |
+| ------------------------------------------- | ----------------------------------------------------- | --------- | ------------------------------------------------------------------------------------------------- |
+| Vercel, "State of agent skills"             | https://vercel.com/blog/state-of-agent-skills         | docs      | Registry scale, concentration, and category distribution. Verified 2026-10-14.                    |
+| skills.sh directory                         | https://www.skills.sh/                                | docs      | Live leaderboard of installed skills. Verified 2026-10-14.                                        |
+| Linkly AI, most-installed skills            | https://linkly.ai/skills/most-installed               | community | Cross-hub install counts; open dataset under CC BY 4.0. Verified 2026-10-14.                      |
+| SkillSignal, "Top 100 Agent Skills in 2026" | https://skill-signal.org/reports/top-100-agent-skills | community | Leaderboard analysis separating adoption from quality. Verified 2026-10-14.                       |
+| olshansky, skills.sh ecosystem dashboard    | https://skills-dashboard.olshansky.info/              | community | Distribution and publisher views over skills.sh data. Verified 2026-10-14.                        |
+| LinklyAI/best-skills (GitHub)               | https://github.com/LinklyAI/best-skills               | community | Daily-updated CSV rankings across hubs. Verified 2026-10-14.                                      |
+| vercel-labs/agent-skills (GitHub)           | https://github.com/vercel-labs/agent-skills           | docs      | Tooling inspected 2026-10-14 at commit 063bee9: unique-name and rule-structure checks only.       |
+| anthropics/skills (GitHub)                  | https://github.com/anthropics/skills                  | docs      | Tooling inspected 2026-10-14 at commit dbd4588: only a single-file frontmatter check.             |
+| mattpocock/skills (GitHub)                  | https://github.com/mattpocock/skills                  | docs      | Tooling inspected 2026-10-14 at commit 49dd158: version single-source script, not wired to CI.    |
+| vercel-labs/skills (GitHub)                 | https://github.com/vercel-labs/skills                 | docs      | Tooling inspected 2026-10-14 at commit 13e4063: duplicate skill directories deliberately allowed. |
