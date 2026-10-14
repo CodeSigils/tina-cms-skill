@@ -53,7 +53,7 @@ source before it is written, never reconstructed from memory:
 
 - Never link `docs/research/` from a runtime file. The runtime payload must not
   contain a loadable path, markdown link, or relative climb into `docs/research/`
-  or any path outside `skills/tina-cms/`. `tests/check-skill.mjs` enforces this.
+  or any path outside `skills/tina-cms/`.
 - No reference-only edits. Every substantive change to a file under
   `skills/tina-cms/references/` must be backed by a finding in `docs/research/`.
   Only trivial typo, whitespace, or link corrections are exempt.
@@ -66,8 +66,6 @@ source before it is written, never reconstructed from memory:
   more than once (duplicate), is a defect.
 - Any change to a `docs/research/` topic file updates `docs/research/index.md`
   in the same commit, so the finding and its registration always move together.
-  `node tests/check-skill.mjs` fails if a topic file cites an unregistered ID or
-  a registered ID is missing from its owning topic file.
 - Never lower a version floor, invent a CVE, a vulnerable range, or a "patched"
   version, present a single "current version" as timeless truth, or recommend
   `@latest` as a repair default. Floors and windows live only in the dated
@@ -75,6 +73,8 @@ source before it is written, never reconstructed from memory:
 - Every external link in a runtime reference comes from
   `skills/tina-cms/references/source-registry.md`. Do not invent or paste a
   remembered URL.
+
+Checks b, c, d, g, h, and j in `tests/check-skill.mjs` enforce these rules.
 
 ## Commit Message Contract
 
@@ -89,20 +89,9 @@ why: Explain the user need, evidence, or design reason for the change.
 ```
 
 `scripts/check_commit_messages.py` enforces a concise subject plus non-empty
-`what:` then `why:` fields. Run it before handoff:
-
-```bash
-python3 scripts/check_commit_messages.py HEAD
-```
-
-To review a batch, pass a range:
-
-```bash
-python3 scripts/check_commit_messages.py HEAD~3..HEAD
-```
-
-The `validate` workflow applies the same check to pull requests and pushes to
-`main`.
+`what:` then `why:` fields. The `.githooks/commit-msg` hook runs it on every
+commit and the `validate` workflow runs it on pull requests and pushes to
+`main`; run it manually per [Verification](#verification).
 
 Do not add AI or agent attribution, `Co-authored-by` trailers, or authorship
 claims to commits or files. Provenance belongs to the repository owners.
