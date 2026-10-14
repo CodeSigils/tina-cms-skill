@@ -1,0 +1,29 @@
+#!/bin/sh
+#
+# Pre-commit hook: fast local validation before every commit.
+# Enable with: git config core.hooksPath .githooks
+#
+# Runs the commit-message policy check and the fast structural checker, and
+# blocks the commit when either reports a finding. A missing interpreter is an
+# environment limit, not a finding: it is skipped with a message rather than
+# blocking the commit.
+#
+set -e
+
+have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+echo "=== pre-commit: commit message policy ==="
+if have python3; then
+    python3 scripts/check_commit_messages.py HEAD
+else
+    echo "pre-commit: python3 not found; skipping commit message policy"
+fi
+
+echo "=== pre-commit: structural check ==="
+if have node; then
+    node tests/check-skill.mjs
+else
+    echo "pre-commit: node not found; skipping structural check"
+fi

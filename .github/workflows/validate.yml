@@ -1,0 +1,97 @@
+name: validate
+
+# Deterministic validation for pushes and pull requests.
+#
+# Optional manual check not wired as a required step: the Agent Skills format
+# validator `quick_validate.py` ships with the Codex skill-creator, which is not
+# vendored in this repository. Run it locally when that toolchain is available:
+#
+#   python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/tina-cms
+#
+# The behavioral scenario suite (`node tests/run-scenarios.mjs`) is LLM-judged and
+# exits 2 when no model provider is configured; that is "could not run"
+# (environmental), not a finding, so the step accepts it.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  commit-policy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Check commit message policy
+        run: |
+          RANGE="${{ github.event.pull_request.base.sha || github.event.before }}..HEAD"
+          if git rev-parse "$RANGE" >/dev/null 2>&1; then
+            python3 scripts/check_commit_messages.py "$RANGE"
+          else
+            echo "::warning::Range $RANGE not resolvable; checking HEAD only"
+            python3 scripts/check_commit_messages.py HEAD
+          fi
+
+  structural:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Structural check (payload, registries, provenance, finding IDs)
+        run: node tests/check-skill.mjs
+      - name: Version checker - current fixture must be clean
+        run: node scripts/check-versions.mjs tests/fixtures/versions/current.json
+      - name: Version checker - below-floor fixture must report a finding
+        run: |
+          set +e
+          node scripts/check-versions.mjs tests/fixtures/versions/below-floor.json
+          code=$?
+          set -e
+          if [ "$code" -ne 1 ]; then
+            echo "expected exit 1 (findings) from below-floor fixture, got $code"
+            exit 1
+          fi
+      - name: Version checker - bad-window fixture must report a finding
+        run: |
+          set +e
+          node scripts/check-versions.mjs tests/fixtures/versions/bad-window.json
+          code=$?
+          set -e
+          if [ "$code" -ne 1 ]; then
+            echo "expected exit 1 (findings) from bad-window fixture, got $code"
+            exit 1
+          fi
+
+  behavioral-scenarios:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Behavioral scenario suite (LLM-judged)
+        run: |
+          set +e
+          node tests/run-scenarios.mjs
+          code=$?
+          set -e
+          if [ "$code" -eq 2 ]; then
+            echo "::notice::behavioral scenarios skipped: no model provider configured (exit 2 is environmental, not a finding)"
+            exit 0
+          fi
+          exit "$code"

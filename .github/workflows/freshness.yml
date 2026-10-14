@@ -1,0 +1,280 @@
+name: freshness
+
+# Scheduled anti-drift job. It (1) resolves the current stable `tinacms` and
+# `@tinacms/cli` from npm, (2) flags any source-registry / version-registry row
+# and any docs/research topic file whose checked date exceeds the TTL, and
+# (3) on drift opens or updates a single `skill-staleness` issue INSTEAD of
+# failing the build. It always records the run in docs/research/research-log.md.
+#
+# Graceful degradation: the issue upsert needs a configured remote plus an
+# authenticated `gh`. When either is missing, the issue step is skipped and the
+# run is recorded in the research log only. GitHub-hosted runs supply the default
+# GITHUB_TOKEN, so the upsert normally runs there; a fork or a token-less run
+# degrades cleanly.
+#
+# The research-log append is committed by this repository's own automation
+# identity (github-actions[bot]). That is a deliberate CI policy choice, not an
+# authorship claim, and the commit carries the required `what:`/`why:` body.
+
+on:
+  schedule:
+    - cron: "0 9 * * 1"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  freshness:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FRESHNESS_TTL_DAYS: "120"
+      GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Resolve current stable Tina packages from npm
+        id: npm
+        run: |
+          set +e
+          tinacms="$(npm view tinacms version 2>/dev/null)"
+          cli="$(npm view @tinacms/cli version 2>/dev/null)"
+          set -e
+          printf 'tinacms=%s\n' "${tinacms:-}" >> "$GITHUB_OUTPUT"
+          printf 'cli=%s\n' "${cli:-}" >> "$GITHUB_OUTPUT"
+          echo "npm tinacms=${tinacms:-unknown}"
+          echo "npm @tinacms/cli=${cli:-unknown}"
+
+      - name: Scan registries and research files for staleness and drift
+        id: scan
+        env:
+          TINACMS_NPM: ${{ steps.npm.outputs.tinacms }}
+          CLI_NPM: ${{ steps.npm.outputs.cli }}
+        run: |
+          python3 - <<'PY'
+          import datetime
+          import os
+          import pathlib
+          import re
+          import sys
+
+          ROOT = pathlib.Path(".")
+          TTL_DAYS = int(os.environ.get("FRESHNESS_TTL_DAYS") or "120")
+          TODAY = datetime.date.today()
+          DATE_RE = re.compile(r"\b(\d{4})-(\d{2})-(\d{2})\b")
+          SEMVER_RE = re.compile(r"\d+(?:\.\d+){1,2}")
+
+          def dates_in(text):
+              out = []
+              for m in DATE_RE.finditer(text):
+                  try:
+                      out.append(datetime.date(int(m.group(1)), int(m.group(2)), int(m.group(3))))
+                  except ValueError:
+                      pass
+              return out
+
+          def table_rows(path):
+              rows = []
+              if not path.exists():
+                  return rows
+              for line in path.read_text(encoding="utf-8").splitlines():
+                  stripped = line.strip()
+                  if not stripped.startswith("|"):
+                      continue
+                  cells = [c.strip() for c in stripped.strip("|").split("|")]
+                  if cells and all(re.fullmatch(r":?-{2,}:?", c) for c in cells):
+                      continue
+                  ds = dates_in(stripped)
+                  if ds:
+                      rows.append((cells[0], max(ds)))
+              return rows
+
+          def is_stale(d):
+              return (TODAY - d).days > TTL_DAYS
+
+          def scan_registry(path, label):
+              stale = []
+              for name, d in table_rows(path):
+                  if is_stale(d):
+                      stale.append(f"{label}: `{name}` checked {d.isoformat()} (> {TTL_DAYS}d)")
+              return stale
+
+          def topic_files():
+              d = ROOT / "docs" / "research"
+              if not d.exists():
+                  return []
+              return sorted(p for p in d.glob("*.md") if p.name not in ("index.md", "research-log.md"))
+
+          def topic_checked(path):
+              text = path.read_text(encoding="utf-8")
+              for line in text.splitlines():
+                  if "provenance" in line.lower():
+                      ds = dates_in(line)
+                      if ds:
+                          return max(ds)
+              ds = dates_in(text)
+              return max(ds) if ds else None
+
+          def registry_stable(path, pkg):
+              if not path.exists():
+                  return None
+              for line in path.read_text(encoding="utf-8").splitlines():
+                  if pkg in line and "stable line" in line:
+                      m = SEMVER_RE.search(line)
+                      if m:
+                          return m.group(0)
+              return None
+
+          src_reg = ROOT / "skills" / "tina-cms" / "references" / "source-registry.md"
+          ver_reg = ROOT / "skills" / "tina-cms" / "references" / "version-registry.md"
+
+          stale = []
+          stale += scan_registry(src_reg, "source-registry")
+          stale += scan_registry(ver_reg, "version-registry")
+
+          topic_stale = []
+          for p in topic_files():
+              d = topic_checked(p)
+              if d is None:
+                  topic_stale.append(f"docs/research/{p.name}: no checked date found")
+              elif is_stale(d):
+                  topic_stale.append(f"docs/research/{p.name}: checked {d.isoformat()} (> {TTL_DAYS}d)")
+
+          tinacms_npm = (os.environ.get("TINACMS_NPM") or "").strip()
+          cli_npm = (os.environ.get("CLI_NPM") or "").strip()
+          tinacms_rec = registry_stable(ver_reg, "tinacms")
+          cli_rec = registry_stable(ver_reg, "@tinacms/cli")
+
+          version_drift = []
+          if tinacms_npm and tinacms_rec and tinacms_npm != tinacms_rec:
+              version_drift.append(f"tinacms: npm {tinacms_npm} != registry {tinacms_rec}")
+          if cli_npm and cli_rec and cli_npm != cli_rec:
+              version_drift.append(f"@tinacms/cli: npm {cli_npm} != registry {cli_rec}")
+
+          drift = bool(stale or topic_stale or version_drift)
+
+          lines = []
+          lines.append("## Skill freshness run")
+          lines.append("")
+          lines.append(f"- date: {TODAY.isoformat()}")
+          lines.append(f"- TTL: {TTL_DAYS} days")
+          lines.append(f"- npm `tinacms`: {tinacms_npm or 'unknown'}")
+          lines.append(f"- npm `@tinacms/cli`: {cli_npm or 'unknown'}")
+          lines.append(f"- drift: {'yes' if drift else 'no'}")
+          lines.append("")
+          if stale:
+              lines.append("### TTL-expired registry rows")
+              lines.extend(f"- {s}" for s in stale)
+              lines.append("")
+          if topic_stale:
+              lines.append("### TTL-expired research topic files")
+              lines.extend(f"- {s}" for s in topic_stale)
+              lines.append("")
+          if version_drift:
+              lines.append("### Registry version drift")
+              lines.extend(f"- {s}" for s in version_drift)
+              lines.append("")
+          if not drift:
+              lines.append("No TTL-expired rows and no registry version drift.")
+              lines.append("")
+
+          report = "\n".join(lines) + "\n"
+          pathlib.Path("/tmp/freshness-report.md").write_text(report, encoding="utf-8")
+          print(report)
+
+          summary_path = os.environ.get("GITHUB_STEP_SUMMARY")
+          if summary_path:
+              with open(summary_path, "a", encoding="utf-8") as fh:
+                  fh.write(report)
+
+          output_path = os.environ.get("GITHUB_OUTPUT")
+          if output_path:
+              with open(output_path, "a", encoding="utf-8") as fh:
+                  fh.write(f"drift={'true' if drift else 'false'}\n")
+                  fh.write(f"stale_count={len(stale) + len(topic_stale)}\n")
+                  fh.write(f"version_drift_count={len(version_drift)}\n")
+          PY
+
+      - name: Upsert the skill-staleness issue (drift only)
+        if: ${{ steps.scan.outputs.drift == 'true' }}
+        continue-on-error: true
+        run: |
+          if git remote get-url origin >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
+            gh label create skill-staleness --color 1d76db \
+              --description "Scheduled skill freshness drift" --force >/dev/null 2>&1 || true
+            existing="$(gh issue list --state open --search 'skill-staleness in:title' \
+              --json number --jq '.[0].number' 2>/dev/null)"
+            if [ -n "$existing" ] && [ "$existing" != "null" ]; then
+              gh issue comment "$existing" --body-file /tmp/freshness-report.md
+              echo "::notice::updated existing skill-staleness issue #$existing"
+            else
+              gh issue create \
+                --title "skill-staleness: TinaCMS freshness drift" \
+                --body-file /tmp/freshness-report.md \
+                --label skill-staleness
+            fi
+          else
+            echo "::notice::no remote or no gh auth; skipping issue upsert (recorded in the research log only)"
+          fi
+
+      - name: Record the run in the research log
+        env:
+          DRIFT: ${{ steps.scan.outputs.drift }}
+          STALE_COUNT: ${{ steps.scan.outputs.stale_count }}
+          VERSION_DRIFT_COUNT: ${{ steps.scan.outputs.version_drift_count }}
+          TINACMS_NPM: ${{ steps.npm.outputs.tinacms }}
+          CLI_NPM: ${{ steps.npm.outputs.cli }}
+        run: |
+          entry="/tmp/freshness-log-entry.md"
+          {
+            echo ""
+            echo "## Session $(date -u +%F): scheduled freshness run"
+            echo ""
+            echo "### Packages researched"
+            echo ""
+            echo "- \`tinacms\` (npm current stable: ${TINACMS_NPM:-unknown})"
+            echo "- \`@tinacms/cli\` (npm current stable: ${CLI_NPM:-unknown})"
+            echo ""
+            echo "### Sources"
+            echo ""
+            echo "- npm registry (\`npm view tinacms version\`, \`npm view @tinacms/cli version\`)."
+            echo "- Repo registries \`skills/tina-cms/references/source-registry.md\` and \`.../version-registry.md\`, and the \`docs/research/\` topic-file provenance headers."
+            echo ""
+            echo "### Method"
+            echo ""
+            echo "- TTL ${FRESHNESS_TTL_DAYS} days. Compared each registry row's checked date and every topic-file provenance date against the TTL, and compared the npm current stable line with the registry's recorded current stable line."
+            echo ""
+            echo "### Result"
+            echo ""
+            echo "- drift: ${DRIFT:-unknown}"
+            echo "- staleness findings: ${STALE_COUNT:-unknown}; version-drift findings: ${VERSION_DRIFT_COUNT:-unknown}"
+            echo "- issue action: per the workflow summary (issue upsert on drift, or skipped without a remote/auth)."
+            echo ""
+            echo "### Next-research trigger"
+            echo ""
+            echo "- Re-run when a new \`tinacms\` or \`@tinacms/cli\` minor/patch lands, a new advisory raises a floor, a row passes its TTL, a deployment-options page changes, or a TinaDocs OpenAPI area is exercised."
+          } > "$entry"
+          cat "$entry" >> docs/research/research-log.md
+
+          if git remote get-url origin >/dev/null 2>&1 && [ -n "${GH_TOKEN:-}" ]; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add docs/research/research-log.md
+            if ! git diff --cached --quiet; then
+              git commit \
+                -m "chore(research): record scheduled freshness run $(date -u +%F)" \
+                -m "what: append the scheduled freshness run to docs/research/research-log.md" \
+                -m "why: the freshness workflow always records its run so drift checks stay auditable and the research record stays current"
+              git push
+            fi
+          else
+            echo "::notice::no remote/token; the run is recorded in the runner only"
+          fi

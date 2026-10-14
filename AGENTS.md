@@ -1,0 +1,129 @@
+# Repository Instructions
+
+Scope: maintainer and authoring conventions for this repository. This file is
+not part of the runtime payload and is never loaded by the installed skill.
+
+## Layout And Boundaries
+
+The repository has exactly two boundaries:
+
+- Runtime payload: `skills/tina-cms/` (`SKILL.md`, `references/`,
+  `agents/openai.yaml`). This is the single portable skill directory that ships
+  to every host. It is the only thing the installed skill loads.
+- Authoring-only: `docs/` (`docs/research/` and `docs/official-links.md`), plus
+  `README.md`, `SECURITY.md`, `LICENSE`, `AGENTS.md`, `docs/roadmap.md`,
+  `scripts/`, `tests/`, and `.github/`. Nothing here is loaded at runtime.
+
+The dependency is one-way: references are distilled **from** `docs/research/`.
+The reverse is never allowed.
+
+## Editing Rules
+
+- Never link `docs/research/` from a runtime file. The runtime payload must not
+  contain a loadable path, markdown link, or relative climb into `docs/research/`
+  or any path outside `skills/tina-cms/`. `tests/check-skill.mjs` enforces this.
+- No reference-only edits. Every substantive change to a file under
+  `skills/tina-cms/references/` must be backed by a finding in `docs/research/`.
+  Only trivial typo, whitespace, or link corrections are exempt.
+- Every reference carries a provenance header citing its findings (finding ID +
+  tier + checked date + recheck trigger).
+- Every finding ID (`INST-*`, `CLI-*`, `SCHEMA-*`, `API-*`, `DEPLOY-*`,
+  `CLOUD-*`, `SELF-*`, `TDOCS-*`, `STYLE-*`) is registered exactly once in
+  `docs/research/index.md`, which also owns the tier definitions. A finding ID
+  that appears in a topic file but is not registered (orphan), or is registered
+  more than once (duplicate), is a defect.
+- Never lower a version floor, invent a CVE, a vulnerable range, or a "patched"
+  version, present a single "current version" as timeless truth, or recommend
+  `@latest` as a repair default. Floors and windows live only in the dated
+  `skills/tina-cms/references/version-registry.md`.
+- Every external link in a runtime reference comes from
+  `skills/tina-cms/references/source-registry.md`. Do not invent or paste a
+  remembered URL.
+
+## Commit Message Contract
+
+Every commit has a concise imperative subject and a body with both fields, in
+this order:
+
+```text
+<imperative subject>
+
+what: Describe the files, behavior, or documentation changed.
+why: Explain the user need, evidence, or design reason for the change.
+```
+
+`scripts/check_commit_messages.py` enforces a concise subject plus non-empty
+`what:` then `why:` fields. Run it before handoff:
+
+```bash
+python3 scripts/check_commit_messages.py HEAD
+```
+
+To review a batch, pass a range:
+
+```bash
+python3 scripts/check_commit_messages.py HEAD~3..HEAD
+```
+
+The `validate` workflow applies the same check to pull requests and pushes to
+`main`.
+
+Do not add AI or agent attribution, `Co-authored-by` trailers, or authorship
+claims to commits or files. Provenance belongs to the repository owners.
+
+## No Changelog
+
+This repository keeps no `CHANGELOG.md` and no changelog file under any other
+name. The commit history is the canonical change record: every commit body
+carries `what:` then `why:`. Research and decision records hold detailed
+rationale, and `docs/roadmap.md` tracks durable milestones, phase status, and
+maintenance triggers. Do not reintroduce a changelog.
+
+## Working Plan Is Not Shipped
+
+The build plan under `.omo/plans/` is a build artifact and is never copied into
+the repository. `docs/roadmap.md` is the shipped distillation.
+
+## Enabling The Pre-Commit Hook
+
+The hook at `.githooks/pre-commit` is not active until the repository opts in:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+The hook runs `python3 scripts/check_commit_messages.py HEAD` and the fast
+structural check `node tests/check-skill.mjs`; it exits 0 on a clean tree and
+blocks on findings. Do not commit with `--no-verify`.
+
+## Verification
+
+Run the deterministic checks before claiming completion:
+
+```bash
+node tests/check-skill.mjs
+node scripts/check-versions.mjs tests/fixtures/versions/current.json
+python3 scripts/check_commit_messages.py HEAD
+```
+
+The behavioral scenario suite (`node tests/run-scenarios.mjs`) is LLM-judged and
+degrades to exit 2 when no model provider is configured; exit 2 means
+"could not run", not "findings". `quick_validate.py` from the Codex
+skill-creator is an optional manual check, not a required repository step.
+
+## Mandatory Phase-Close Documentation Gate
+
+At the end of every roadmap phase, before reporting the phase complete or
+starting the next one:
+
+1. Update every affected authoring document: the relevant `docs/research/` topic
+   file and its provenance header, `docs/research/index.md` (registrations), the
+   `docs/research/research-log.md` session entry, `docs/roadmap.md` phase status
+   and acceptance evidence, and any runtime reference distilled from a changed
+   finding.
+2. Update checked dates where evidence was rechecked and verify affected
+   relative Markdown links.
+3. Record any intentionally unchanged document with the reason in the handoff.
+
+A phase is not complete until its documentation updates and verification are
+complete.
