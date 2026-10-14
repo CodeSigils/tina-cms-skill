@@ -463,11 +463,12 @@ function checkDocumentationDrift(findings, root) {
 }
 
 /**
- * Every runtime reference must carry a provenance header, and every finding ID
- * it cites (including `X-01 through X-11` ranges) must be registered in
- * docs/research/index.md. This backs the "no reference-only edits" and "cite a
- * registered finding" rules for the runtime payload, which the topic-file checks
- * do not cover.
+ * Every runtime reference must carry a provenance header that cites its
+ * findings (finding ID + tier + checked date + recheck trigger), and every
+ * finding ID it cites (including `X-01 through X-11` ranges) must be registered
+ * in docs/research/index.md. This backs the "no reference-only edits", the
+ * "provenance header" rule, and the "cite a registered finding" rule for the
+ * runtime payload, which the topic-file checks do not cover.
  */
 function checkReferenceProvenanceIds(findings, root) {
   const refDir = join(root, "skills", "tina-cms", "references");
@@ -491,6 +492,13 @@ function checkReferenceProvenanceIds(findings, root) {
       findings.push({ code: "j.header", message: `references/${file} has no provenance header` });
       continue;
     }
+    const prov = header[1];
+    if (!/TIER\s*[1-4]/i.test(prov))
+      findings.push({ code: "j.tier", message: `references/${file} provenance header does not name a tier` });
+    if (!/checked\s+\d{4}-\d{2}-\d{2}/i.test(prov))
+      findings.push({ code: "j.checked", message: `references/${file} provenance header has no checked date` });
+    if (!/recheck\s+trigger/i.test(prov))
+      findings.push({ code: "j.recheck", message: `references/${file} provenance header has no recheck trigger` });
     const cited = new Set();
     const frag = header[1].replace(/`/g, ""); // ranges appear as `X-01` through `X-14`
     for (const m of frag.matchAll(ID_RE)) cited.add(m[0]);

@@ -207,7 +207,7 @@ history is the canonical change record, `docs/research/` holds detailed
 rationale, and [`docs/roadmap.md`](docs/roadmap.md) tracks durable milestones, a
 shipped log, a backlog, and maintenance triggers.
 
-To enable the optional pre-commit hook:
+To enable the optional git hooks:
 
 ```bash
 git config core.hooksPath .githooks
@@ -223,7 +223,7 @@ docs/roadmap.md        # milestones, shipped log, backlog, maintenance triggers
 tests/                 # deterministic structural checker + behavioral scenarios
 scripts/               # version checker and commit-message checker
 .github/workflows/     # validation and scheduled freshness workflows
-.githooks/             # optional pre-commit hook
+.githooks/             # optional git hooks (pre-commit, commit-msg)
 ```
 
 ## See Also

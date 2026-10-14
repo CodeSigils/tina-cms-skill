@@ -13,7 +13,7 @@ repository, local path, commit, digest, or test result. Target-specific
 observations belong in the authoring record under `docs/research/`, which the
 runtime skill never reads or links.
 
-Provenance: findings `INST-01` through `INST-14`, `CLI-01` through `CLI-12`, `SCHEMA-01` through `SCHEMA-07`, `API-01` through `API-09`, `DEPLOY-01` through `DEPLOY-09`, `CLOUD-01` through `CLOUD-05`, `SELF-01` through `SELF-05`, `TDOCS-01` through `TDOCS-10`, `STYLE-01` through `STYLE-04` | tiers: TIER1 through TIER4 (per row) | recheck trigger: re-verify a URL when its owning finding's recheck trigger fires or the freshness workflow flags the row past its TTL. Every URL below was verified reachable on 2026-10-13 against the
+Provenance: findings `INST-01` through `INST-14`, `CLI-01` through `CLI-12`, `SCHEMA-01` through `SCHEMA-07`, `API-01` through `API-09`, `DEPLOY-01` through `DEPLOY-09`, `CLOUD-01` through `CLOUD-05`, `SELF-01` through `SELF-05`, `TDOCS-01` through `TDOCS-10`, `STYLE-01` through `STYLE-04` | tiers: TIER1 through TIER4 (per row) | checked 2026-10-13 | recheck trigger: re-verify a URL when its owning finding's recheck trigger fires or the freshness workflow flags the row past its TTL. Every URL below was verified reachable on 2026-10-13 against the
 current official TinaCMS documentation set. Several routes were corrected to
 their canonical page (for example `/docs/reference/schema`, not `/docs/schema`;
 `/docs/graphql/queries` plus `/docs/graphql/cli`, not `/docs/graphql/overview`;

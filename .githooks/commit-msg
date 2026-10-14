@@ -1,0 +1,21 @@
+#!/bin/sh
+#
+# Commit-msg hook: enforce the commit-message policy on the pending message.
+# Enable with: git config core.hooksPath .githooks
+#
+# Git passes the path to the pending commit message as $1. A missing
+# interpreter is an environment limit, not a finding: it is skipped with a
+# message rather than blocking the commit.
+#
+set -e
+
+have() {
+    command -v "$1" >/dev/null 2>&1
+}
+
+echo "=== commit-msg: commit message policy ==="
+if have python3; then
+    python3 scripts/check_commit_messages.py --message-file "$1"
+else
+    echo "commit-msg: python3 not found; skipping commit message policy"
+fi

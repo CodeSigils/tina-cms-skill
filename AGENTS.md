@@ -139,17 +139,25 @@ reference, not in this roadmap.
 The build plan under `.omo/plans/` is a build artifact and is never copied into
 the repository. `docs/roadmap.md` is the shipped distillation.
 
-## Enabling The Pre-Commit Hook
+## Enabling The Git Hooks
 
-The hook at `.githooks/pre-commit` is not active until the repository opts in:
+The hooks under `.githooks/` are not active until the repository opts in:
 
 ```bash
 git config core.hooksPath .githooks
 ```
 
-The hook runs `python3 scripts/check_commit_messages.py HEAD` and the fast
-structural check `node tests/check-skill.mjs`; it exits 0 on a clean tree and
-blocks on findings. Do not commit with `--no-verify`.
+Two hooks run on every commit:
+
+- `.githooks/pre-commit` runs the fast structural check
+  `node tests/check-skill.mjs`.
+- `.githooks/commit-msg` runs the commit-message policy
+  `python3 scripts/check_commit_messages.py --message-file "$1"` against the
+  pending message.
+
+Each exits 0 on a clean tree and blocks the commit on findings; a missing
+interpreter is skipped with a message rather than blocking. Do not commit with
+`--no-verify`.
 
 ## Verification
 

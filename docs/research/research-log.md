@@ -186,3 +186,64 @@ Capabilities") should be propagated to the sibling skill repositories
 
 - Re-open only if a sibling repository removes its admission or phase-close gate,
   or if a capability is proposed here that the existing lifecycle does not cover.
+
+## Session 2026-10-14: governance hardening - provenance enforcement and git hooks
+
+### Question
+
+- Two weaknesses were named for a governance-heavy, agent-writing repository: a
+  producing agent can silently violate a stated rule, and the delegation pool
+  used to author changes can abort or vanish. Should new process be added, or
+  should the existing rules be enforced more completely?
+
+### Sources
+
+- Anthropic, "Demystifying evals for AI agents" (2026-01) and "Effective
+  harnesses for long-running agents" plus its repository
+  (https://github.com/anthropics/cwc-long-running-agents): outcomes are judged by
+  on-disk evidence, not the agent's self-report, and "done" is made structural.
+- Anthropic, "Skill authoring best practices": prefer scripts for deterministic
+  operations; Agent Skills Specification (https://agentskills.io/specification)
+  for normative structure and a `metadata:` provenance map.
+- "Why Do Multi-Agent LLM Systems Fail?" (MAST, arXiv 2503.13657): verification is
+  a named failure category; adding objective verification measurably helps.
+- Anthropic, "Harness design for long-running application development" (2026-03):
+  find the simplest solution and only add complexity when needed - do not add
+  process without a demonstrated failure.
+
+### Method
+
+- Chose enforcement of existing rules over new process: the repository already
+  states the rules; the checker under-enforced some of them.
+- Extended `tests/check-skill.mjs` check j so a runtime reference provenance
+  header must name a tier, a checked date, and a recheck trigger - the same
+  fields the topic-file check already required.
+- Corrected `source-registry.md`, the one reference whose provenance line lacked a
+  checked date.
+- Made the commit-message policy enforceable on the pending message via a
+  `--message-file <path>` mode, and split the hooks: `.githooks/pre-commit` runs
+  the structural check, a new `.githooks/commit-msg` runs the message policy
+  against the pending message.
+- Fault-injection in disposable copies proved each new finding fires and the
+  baseline stays clean.
+
+### Findings
+
+- Machine-enforced checks make a producing agent's output verifiable regardless
+  of which model produced it; this is proportionality-preserving, because it
+  enforces rules the repository already states rather than adding new ones.
+- The `pre-commit` hook checked the commit-message policy against `HEAD`, which
+  is the parent commit at hook time, so the pending message was never validated;
+  a `commit-msg` hook is the correct channel.
+
+### Outcome
+
+- `check-skill.mjs` check j now enforces the full provenance rule; the clean
+  message stays "10 checks passed" (the new codes are sub-findings of check j).
+- The commit-message policy runs against the pending message; both hooks are
+  enabled with the single `git config core.hooksPath .githooks`.
+
+### Next-research trigger
+
+- If the deterministic checker gains a check that a reviewer would otherwise
+  perform, or if the hook set changes.
