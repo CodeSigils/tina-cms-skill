@@ -36,6 +36,9 @@ const RESEARCH_TOPIC_FILES = [
   "styling.md",
 ];
 
+/** Root authoring documents reviewed by the Documentation Drift Review rule. */
+const DRIFT_DOCS = ["README.md", "SECURITY.md", "AGENTS.md", "docs/roadmap.md"];
+
 const ID_RE = /\b(?:INST|CLI|SCHEMA|API|DEPLOY|CLOUD|SELF|TDOCS|STYLE)-\d{2,}\b/g;
 
 /** Resolve the repository root from --root, else from the script location. */
@@ -429,6 +432,36 @@ function checkPortableCopy(findings, root) {
   }
 }
 
+/**
+ * Check the root authoring documents guarded by the Documentation Drift Review
+ * rule: they exist, SECURITY.md carries a `Last reviewed` date, and AGENTS.md
+ * has the rule section naming the required set. It cannot judge semantic
+ * staleness, so it only catches omissions.
+ */
+function checkDocumentationDrift(findings, root) {
+  for (const rel of DRIFT_DOCS) {
+    if (!existsSync(join(root, rel)))
+      findings.push({ code: "i.root-doc", message: `${rel} is missing (root authoring document)` });
+  }
+  const securityFile = join(root, "SECURITY.md");
+  if (existsSync(securityFile) && !/Last reviewed:\s*\d{4}-\d{2}-\d{2}/.test(readText(securityFile)))
+    findings.push({ code: "i.last-reviewed", message: "SECURITY.md has no `Last reviewed: YYYY-MM-DD` line" });
+  const agentsFile = join(root, "AGENTS.md");
+  if (!existsSync(agentsFile)) {
+    findings.push({ code: "i.drift-rule", message: "AGENTS.md is missing (Documentation Drift Review lives there)" });
+    return;
+  }
+  const section = /##\s+Documentation Drift Review[\s\S]*?(?=\n##\s|$)/.exec(readText(agentsFile));
+  if (!section) {
+    findings.push({ code: "i.drift-rule", message: "AGENTS.md has no `## Documentation Drift Review` section" });
+    return;
+  }
+  for (const rel of ["README.md", "SECURITY.md", "AGENTS.md"]) {
+    if (!section[0].includes(rel))
+      findings.push({ code: "i.drift-set", message: `Documentation Drift Review does not name ${rel}` });
+  }
+}
+
 // ---- entry point ---------------------------------------------------------
 
 function main() {
@@ -450,6 +483,7 @@ function main() {
     checkResearchTopicFiles(findings, root);
     checkFindingIds(findings, root);
     checkPortableCopy(findings, root);
+    checkDocumentationDrift(findings, root);
   } catch (err) {
     const message = err instanceof CheckError ? err.message : `unexpected failure: ${err.message}`;
     process.stderr.write(`check-skill: could not run: ${message}\n`);
@@ -458,7 +492,7 @@ function main() {
 
   findings.sort((a, b) => a.code.localeCompare(b.code) || a.message.localeCompare(b.message));
   if (findings.length === 0) {
-    process.stdout.write("check-skill: clean (8 checks passed)\n");
+    process.stdout.write("check-skill: clean (9 checks passed)\n");
     process.exit(0);
   }
   process.stdout.write(`check-skill: ${findings.length} finding(s)\n`);
