@@ -3,6 +3,7 @@
 [![Agent Skills compatible](https://img.shields.io/badge/Agent%20Skills-compatible-blue)](https://agentskills.io/specification)
 [![skills.sh](https://img.shields.io/badge/skills.sh-directory-blue)](https://skills.sh/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](LICENSE)
+[![validate](https://github.com/CodeSigils/tina-cms-skill/actions/workflows/validate.yml/badge.svg)](https://github.com/CodeSigils/tina-cms-skill/actions/workflows/validate.yml)
 
 **tina-cms-skill** is one installable, portable skill for working in a
 TinaCMS-backed repository. It identifies the actual Tina surface in the target
@@ -237,6 +238,12 @@ scripts/               # version checker and commit-message checker
 | [`skills/tina-cms/SKILL.md`](skills/tina-cms/SKILL.md)                                             | The runtime entrypoint (router).                                                                                                                                                              |
 | [`skills/tina-cms/references/source-registry.md`](skills/tina-cms/references/source-registry.md)   | Dated official docs-link bank.                                                                                                                                                                |
 | [`skills/tina-cms/references/version-registry.md`](skills/tina-cms/references/version-registry.md) | Dated security floors and known-bad windows.                                                                                                                                                  |
+
+## Releases
+
+There is no release cadence. `main` is the shipping line; the repository
+publishes no tagged releases and installs by copying `skills/tina-cms/`. The
+change record is the commit bodies and [`docs/roadmap.md`](docs/roadmap.md).
 
 ## Security
 

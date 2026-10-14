@@ -39,8 +39,8 @@ both done.
 | 3. Verification and version awareness | Deterministic structural checker with fixtures; LLM-judged behavioral scenario suite with a recorded baseline; `scripts/check-versions.mjs`; research findings recorded and registered. | Complete | 2026-10-14 (behavioral baseline pending — see R-1) |
 | 4. Packaging and anti-drift CI        | README, LICENSE, SECURITY, AGENTS, this roadmap; validation workflow; scheduled freshness workflow; commit-message checker and pre-commit hook.                                         | Complete | 2026-10-14                                         |
 
-Release history: no tagged release yet. The repository's change record is the
-commit history; a release exists only when a tag is published.
+Release cadence: none. There are no tagged releases and none are planned;
+`main` is the shipping line, and the commit history is the change record.
 
 ## Shipped
 

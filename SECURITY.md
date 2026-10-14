@@ -49,9 +49,10 @@ The skill never acquires, stores, or transmits secrets.
 
 ## Supported Versions
 
-Only the current `main` line receives security updates. The repository has no
-tagged release yet; once one exists, only the latest release tag and `main`
-receive updates.
+There is no release cadence. `main` is the only supported line and receives
+security updates; the repository publishes no tagged releases. Distribution is
+by copying the portable payload under `skills/tina-cms/`, not by downloading a
+versioned release.
 
 ## Last Reviewed
 
