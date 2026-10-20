@@ -1,6 +1,6 @@
 # Version registry
 
-> Provenance: findings `CLI-01` through `CLI-04`, `CLI-07`, `CLI-08`, `CLI-12`, `INST-01` through `INST-06`, `INST-08` through `INST-14`, `SCHEMA-01`, `SCHEMA-02`, `SCHEMA-05`, `SELF-01`, `SELF-02`, `STYLE-02`, `CLOUD-01`, `CLOUD-02` | tiers: TIER1, TIER2, TIER3, TIER4 (per row) | checked 2026-10-13, refreshed 2026-10-14 | recheck trigger: on every new `tinacms` or `@tinacms/cli` minor or patch, when a new advisory raises a floor, or when a row passes its freshness window.
+> Provenance: findings `CLI-01` through `CLI-04`, `CLI-07`, `CLI-08`, `CLI-12`, `INST-01` through `INST-06`, `INST-08` through `INST-14`, `SCHEMA-01`, `SCHEMA-02`, `SCHEMA-05`, `SELF-01`, `SELF-02`, `STYLE-02`, `CLOUD-01`, `CLOUD-02` | tiers: TIER1, TIER2, TIER3, TIER4 (per row) | checked 2026-10-13, refreshed 2026-10-20 | recheck trigger: on every new `tinacms` or `@tinacms/cli` minor or patch, when a new advisory raises a floor, or when a row passes its freshness window.
 
 This is a runtime reference for the skill. It holds the dated version floors,
 known-bad windows, and recent change history that version-dependent advice must
@@ -24,12 +24,12 @@ Rules for this file:
 - Treat a freshly published release (younger than about a week) with caution
   unless it is a CVE fix.
 
-## A. Current stable line (checked 2026-10-14)
+## A. Current stable line (checked 2026-10-20)
 
 | line                       | value  | checked date | recheck trigger                                                                                                            |
 | -------------------------- | ------ | ------------ | -------------------------------------------------------------------------------------------------------------------------- |
-| `tinacms` stable line      | 3.14.4 | 2026-10-14   | Recheck on every new `tinacms` minor or patch                                                                              |
-| `@tinacms/cli` stable line | 4.0.2  | 2026-10-14   | Recheck on every new `@tinacms/cli` major, minor, or patch; `2.1.8` is the security floor (`CLI-01`), not the current line |
+| `tinacms` stable line      | 3.15.0 | 2026-10-20   | Recheck on every new `tinacms` minor or patch                                                                              |
+| `@tinacms/cli` stable line | 4.0.3  | 2026-10-20   | Recheck on every new `@tinacms/cli` major, minor, or patch; `2.1.8` is the security floor (`CLI-01`), not the current line |
 
 ## B. Security floors (monotonic, checked 2026-10-13)
 

@@ -75,7 +75,8 @@ and always records the run in `docs/research/research-log.md`.
 ## Next-Research Trigger
 
 Next scheduled recheck: **2027-02-10** (120 days after the 2026-10-13/14 research
-sessions). Bring it forward on any maintenance trigger above.
+sessions; registry stable-line rows refreshed 2026-10-20 run to 2027-02-17).
+Bring it forward on any maintenance trigger above.
 
 ## Backlog
 

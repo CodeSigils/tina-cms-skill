@@ -321,3 +321,37 @@ should be consolidated, measured against the skill-creator authoring rubric
 ### Next-research trigger
 
 - Re-run when a new `tinacms` or `@tinacms/cli` minor/patch lands, a new advisory raises a floor, a row passes its TTL, a deployment-options page changes, or a TinaDocs OpenAPI area is exercised.
+
+## Session 2026-10-20: scheduled-freshness drift resolution
+
+### Packages researched
+
+- `tinacms` (npm current stable: 3.15.0)
+- `@tinacms/cli` (npm current stable: 4.0.3)
+
+### Sources
+
+- npm registry (`npm view tinacms version`, `npm view @tinacms/cli version`),
+  re-verified 2026-10-20, matching the 2026-10-19 scheduled freshness run that
+  opened issue #1.
+
+### Method
+
+- Resolved the 2026-10-19 `skill-staleness` issue (#1) registry version drift:
+  re-verified both packages against npm, then updated only the two stable-line
+  rows in `skills/tina-cms/references/version-registry.md` (values and checked
+  dates). Security floors (`tinacms` >= 3.3.1, `@tinacms/cli` floor `2.1.8`)
+  were checked against the same rows and are unaffected by a `tinacms` minor
+  and an `@tinacms/cli` patch.
+
+### Result
+
+- `tinacms` stable line 3.14.4 -> 3.15.0; `@tinacms/cli` stable line 4.0.2 ->
+  4.0.3, both checked 2026-10-20. Issue #1 closed with a pointer to this
+  resolution.
+
+### Next-research trigger
+
+- Re-run when the next `tinacms` or `@tinacms/cli` minor or patch lands, on any
+  new advisory raising a floor, or at the next TTL window (registry rows now run
+  to 2027-02-17; research topic files still 2027-02-10).
