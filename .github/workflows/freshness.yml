@@ -6,6 +6,15 @@ name: freshness
 # (3) on drift opens or updates a single `skill-staleness` issue INSTEAD of
 # failing the build. It always records the run in docs/research/research-log.md.
 #
+# Stable-line-only automation: when the only drift is the Section A stable-line
+# rows (no TTL-expired rows, no stale topic files), the run refreshes those rows
+# itself from the live npm values, gates the edit with check-skill.mjs and
+# check-versions.mjs, commits and pushes as the bot, and closes the issue with
+# the resolution. Floors, windows, and any TTL/topic finding fall back to the
+# issue-only path — those stay human-researched. Pushes from this job rebase
+# onto the current default branch first, because human checkouts push `main`
+# too.
+#
 # Graceful degradation: the issue upsert needs a configured remote plus an
 # authenticated `gh`. When either is missing, the issue step is skipped and the
 # run is recorded in the research log only. GitHub-hosted runs supply the default
@@ -203,8 +212,111 @@ jobs:
                   fh.write(f"version_drift_count={len(version_drift)}\n")
           PY
 
+      - name: Refresh stable-line rows (stable-line-only drift)
+        id: refresh
+        if: ${{ steps.scan.outputs.drift == 'true' && steps.scan.outputs.stale_count == '0' && steps.scan.outputs.version_drift_count != '0' }}
+        env:
+          TINACMS_NPM: ${{ steps.npm.outputs.tinacms }}
+          CLI_NPM: ${{ steps.npm.outputs.cli }}
+        run: |
+          resolved=false
+          if python3 - <<'PY'
+          import datetime
+          import os
+          import pathlib
+          import re
+          import sys
+
+          pkgs = {
+              "tinacms": (os.environ.get("TINACMS_NPM") or "").strip(),
+              "@tinacms/cli": (os.environ.get("CLI_NPM") or "").strip(),
+          }
+          for pkg, ver in pkgs.items():
+              if not re.fullmatch(r"\d+\.\d+\.\d+", ver):
+                  sys.exit(f"refusing to write: npm version for {pkg!r} is {ver!r}")
+
+          path = pathlib.Path("skills/tina-cms/references/version-registry.md")
+          text = path.read_text(encoding="utf-8")
+          today = datetime.date.today().isoformat()
+
+          for pkg, ver in pkgs.items():
+              row = re.compile(
+                  r"(^\| `" + re.escape(pkg) + r"` stable line\s*\|\s*)(\S+)(\s*\|\s*)(\S+)(\s*\|)",
+                  re.M,
+              )
+              text, n = row.subn(
+                  lambda m: m.group(1) + ver + m.group(3) + today + m.group(5),
+                  text,
+                  count=1,
+              )
+              if n != 1:
+                  sys.exit(f"stable-line row not found for {pkg}")
+
+          text, n = re.subn(
+              r"^## A\. Current stable line \(checked \d{4}-\d{2}-\d{2}\)",
+              f"## A. Current stable line (checked {today})",
+              text,
+              count=1,
+              flags=re.M,
+          )
+          if n != 1:
+              sys.exit("Section A header not found")
+
+          text, n = re.subn(r"refreshed \d{4}-\d{2}-\d{2}", f"refreshed {today}", text, count=1)
+          if n != 1:
+              sys.exit("provenance refresh date not found")
+
+          path.write_text(text, encoding="utf-8")
+          print("refreshed:", ", ".join(f"{k}={v}" for k, v in pkgs.items()))
+          PY
+          then
+            if node tests/check-skill.mjs && node scripts/check-versions.mjs tests/fixtures/versions/current.json; then
+              git config user.name "github-actions[bot]"
+              git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+              git add skills/tina-cms/references/version-registry.md
+              if ! git diff --cached --quiet; then
+                git commit \
+                  -m "chore(registry): refresh stable lines to npm current $(date -u +%F)" \
+                  -m "what: update the Section A stable-line rows (values and checked dates) to the npm-verified current versions, with the section-header and provenance refresh dates." \
+                  -m "why: the scheduled freshness run found stable-line-only drift; npm is the primary source, so the workflow refreshes these rows under the AGENTS.md automated exception and closes the staleness issue instead of requiring a manual session."
+              fi
+              if git pull --rebase && git push; then
+                resolved=true
+              else
+                echo "::warning::refresh push failed; reverting the local commit and falling back to issue-only behavior"
+                git fetch origin || true
+                git rebase --abort 2>/dev/null || true
+                git reset --hard origin/main || true
+              fi
+            else
+              echo "::warning::deterministic gates failed after row refresh; discarding the edit and falling back to issue-only behavior"
+              git checkout -- skills/tina-cms/references/version-registry.md
+            fi
+          else
+            echo "::warning::row refresh failed; falling back to issue-only behavior"
+          fi
+          echo "resolved=$resolved" >> "$GITHUB_OUTPUT"
+
+      - name: Close the resolved skill-staleness issue
+        if: ${{ steps.refresh.outputs.resolved == 'true' }}
+        continue-on-error: true
+        env:
+          TINACMS_NPM: ${{ steps.npm.outputs.tinacms }}
+          CLI_NPM: ${{ steps.npm.outputs.cli }}
+        run: |
+          num="$(gh issue list --state open --search 'skill-staleness in:title' \
+            --json number --jq '.[0].number' 2>/dev/null)"
+          if [ -z "$num" ] || [ "$num" = "null" ]; then
+            echo "::notice::no open skill-staleness issue to close"
+            exit 0
+          fi
+          gh issue close "$num" --reason completed --comment "$(cat <<EOF
+          Resolved automatically by the scheduled freshness run: the Section A stable-line rows in \`skills/tina-cms/references/version-registry.md\` were refreshed to the npm-verified current versions (\`tinacms\` ${TINACMS_NPM:-unknown}, \`@tinacms/cli\` ${CLI_NPM:-unknown}), checked $(date -u +%F), and passed \`tests/check-skill.mjs\` and \`scripts/check-versions.mjs\` before push. Floors, windows, and TTL/topic findings are not automated and were not touched.
+          EOF
+          )"
+
       - name: Upsert the skill-staleness issue (drift only)
-        if: ${{ steps.scan.outputs.drift == 'true' }}
+        if: ${{ steps.scan.outputs.drift == 'true' && steps.refresh.outputs.resolved != 'true' }}
         continue-on-error: true
         run: |
           if git remote get-url origin >/dev/null 2>&1 && gh auth status >/dev/null 2>&1; then
@@ -231,6 +343,7 @@ jobs:
           DRIFT: ${{ steps.scan.outputs.drift }}
           STALE_COUNT: ${{ steps.scan.outputs.stale_count }}
           VERSION_DRIFT_COUNT: ${{ steps.scan.outputs.version_drift_count }}
+          AUTO_RESOLVED: ${{ steps.refresh.outputs.resolved }}
           TINACMS_NPM: ${{ steps.npm.outputs.tinacms }}
           CLI_NPM: ${{ steps.npm.outputs.cli }}
         run: |
@@ -257,7 +370,11 @@ jobs:
             echo ""
             echo "- drift: ${DRIFT:-unknown}"
             echo "- staleness findings: ${STALE_COUNT:-unknown}; version-drift findings: ${VERSION_DRIFT_COUNT:-unknown}"
-            echo "- issue action: per the workflow summary (issue upsert on drift, or skipped without a remote/auth)."
+            if [ "${AUTO_RESOLVED:-}" = "true" ]; then
+              echo "- resolution: stable-line rows auto-refreshed to the npm-verified current versions (gated and pushed by this run); the skill-staleness issue was closed with this resolution."
+            else
+              echo "- issue action: per the workflow summary (issue upsert on drift, or skipped without a remote/auth)."
+            fi
             echo ""
             echo "### Next-research trigger"
             echo ""
@@ -274,6 +391,7 @@ jobs:
                 -m "chore(research): record scheduled freshness run $(date -u +%F)" \
                 -m "what: append the scheduled freshness run to docs/research/research-log.md" \
                 -m "why: the freshness workflow always records its run so drift checks stay auditable and the research record stays current"
+              git pull --rebase
               git push
             fi
           else

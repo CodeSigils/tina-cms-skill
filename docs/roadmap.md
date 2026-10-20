@@ -68,9 +68,13 @@ when any of the following happens:
 - a TinaDocs OpenAPI compatibility area is exercised against a real target.
 
 The scheduled freshness workflow resolves the current stable `tinacms` and
-`@tinacms/cli` from npm and flags TTL-expired rows for these reasons. On drift it
-opens or updates a single `skill-staleness` issue rather than failing the build,
-and always records the run in `docs/research/research-log.md`.
+`@tinacms/cli` from npm and flags TTL-expired rows for these reasons. When the
+drift is stable-line only, it refreshes those rows itself after live npm
+verification (gated by the deterministic checks) and closes the
+`skill-staleness` issue with the resolution; otherwise it opens or updates that
+single issue rather than failing the build, and closing it is a maintainer
+action once resolved. Either way it records the run in
+`docs/research/research-log.md`.
 
 ## Next-Research Trigger
 

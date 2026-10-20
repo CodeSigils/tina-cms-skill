@@ -57,6 +57,13 @@ source before it is written, never reconstructed from memory:
 - No reference-only edits. Every substantive change to a file under
   `skills/tina-cms/references/` must be backed by a finding in `docs/research/`.
   Only trivial typo, whitespace, or link corrections are exempt.
+- Automated exception to the previous rule: the Section A stable-line rows of
+  `skills/tina-cms/references/version-registry.md` may be refreshed by the
+  scheduled freshness workflow after live npm verification — the run's
+  `docs/research/research-log.md` session entry records the basis, and the run
+  gates the edit with `tests/check-skill.mjs` and `scripts/check-versions.mjs`
+  before pushing. Security floors, known-bad windows, and blocked-version
+  entries are never automated and remain research-backed human edits.
 - Every reference carries a provenance header citing its findings (finding ID +
   tier + checked date + recheck trigger).
 - Every finding ID (`INST-*`, `CLI-*`, `SCHEMA-*`, `API-*`, `DEPLOY-*`,
@@ -148,6 +155,31 @@ Each exits 0 on a clean tree and blocks the commit on findings; a missing
 interpreter is skipped with a message rather than blocking. Do not commit with
 `--no-verify`.
 
+## Repository Shape And Operations
+
+This file is also the operational reference: the repository has no
+`CONTRIBUTING.md` and no `MAINTENANCE.md`. Facts needed before git- or
+settings-shaped changes:
+
+- **Shipping line:** `main`, with changes committed directly — there is no
+  pull-request flow. The `protect-main` ruleset blocks only branch deletion and
+  force-pushes; ordinary pushes are allowed. A stronger require-PR baseline is a
+  future deliberate decision, not current state.
+- **Concurrent writer:** the scheduled `.github/workflows/freshness.yml` run
+  pushes to `main` as `github-actions[bot]` (research-log append, plus
+  stable-line refreshes under the automated exception above). Before pushing
+  from any checkout: `git fetch` and rebase onto `origin/main`. The append-only
+  tail of `docs/research/research-log.md` surfaces races as ordinary rebase
+  conflicts — resolve them chronologically, keeping every session entry.
+- **Security posture (enabled 2026-10-20):** secret scanning and push
+  protection, Dependabot alerts, Dependabot security updates, malware alerts,
+  private vulnerability reporting, and CodeQL default setup (alerts only).
+- **No Dependabot config, deliberately:** there is no `.github/dependabot.yml`
+  because the repository is dependency-free (Node ESM and Python stdlib, no
+  lockfile). Do not add one without a dependency first.
+- **Merge settings:** auto-merge and delete-branch-on-merge are unused — there
+  are no pull requests to merge.
+
 ## Verification
 
 Run the deterministic checks before claiming completion:
@@ -182,7 +214,7 @@ The root authoring documents in scope are:
 | :------------ | :---------------------------------------------- | :------------------------------------------------------------------------------------------------- |
 | `README.md`   | scope, install, or verification changes         | Overview, Install, Verification, and See Also still match reality                                  |
 | `SECURITY.md` | scope, trust surface, or release-policy changes | `Scope`, `Secret Handling`, and `Supported Versions` still match, and `Last reviewed` is refreshed |
-| `AGENTS.md`   | layout, rules, or machinery changes             | Boundaries, Editing Rules, and Verification still match reality                                    |
+| `AGENTS.md`   | layout, rules, machinery, or repository-settings changes  | Boundaries, Editing Rules, Repository Shape And Operations, and Verification still match reality |
 
 `tests/check-skill.mjs` verifies these documents exist, that `SECURITY.md`
 carries a `Last reviewed` date, and that this section names the required set; it
