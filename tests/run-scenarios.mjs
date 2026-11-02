@@ -9,6 +9,7 @@
 //
 // Usage:
 //   node tests/run-scenarios.mjs [--matrix <file>] [--baseline <file>]
+//                               [--write-baseline]
 //
 // Provider configuration (any OpenAI-compatible /chat/completions endpoint):
 //   SCENARIO_BASE_URL   e.g. https://api.openai.com/v1
@@ -16,7 +17,8 @@
 //   SCENARIO_API_KEY    bearer token (also read from OPENAI_API_KEY)
 //
 // Exit codes (tri-state contract):
-//   0  clean       - all scenarios passed (and baseline written if absent)
+//   0  clean       - all scenarios passed; a missing baseline is written only
+//                    when --write-baseline is supplied
 //   1  findings    - one or more scenarios failed, or a baseline regression
 //   2  could-not-run - no model provider is configured, or the run could not
 //                      start; the scenario list and baseline schema are printed
@@ -55,6 +57,7 @@ function parseArgs(argv) {
   for (let i = 0; i < argv.length; i++) {
     if (argv[i] === "--matrix") opts.matrix = argv[++i];
     else if (argv[i] === "--baseline") opts.baseline = argv[++i];
+    else if (argv[i] === "--write-baseline") opts.writeBaseline = true;
   }
   return opts;
 }
@@ -269,7 +272,7 @@ async function main() {
       if (recorded.pass === true && results[id] && results[id].pass === false)
         console.log(`REGRESSION ${id}: baseline passed but the current run failed`);
     }
-  } else if (failures.length === 0) {
+  } else if (failures.length === 0 && opts.writeBaseline) {
     const baseline = {
       schema_version: 1,
       suite: "tina-cms behavioral scenarios",
@@ -282,6 +285,8 @@ async function main() {
     mkdirSync(dirname(baselineFile), { recursive: true });
     writeFileSync(baselineFile, `${JSON.stringify(baseline, null, 2)}\n`);
     console.log(`baseline written to ${baselineFile}`);
+  } else if (failures.length === 0) {
+    console.log(`no baseline recorded; rerun with --write-baseline to write ${baselineFile}`);
   }
 
   if (failures.length > 0) {

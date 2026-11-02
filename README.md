@@ -21,7 +21,8 @@ which surface the task touches.
 
 If you are an agent working in this repository, read [`AGENTS.md`](AGENTS.md)
 first, and [`docs/roadmap.md`](docs/roadmap.md) for a picture of the project's
-current state and direction. If you are using the installed skill, its
+current state and direction. Maintainer documentation is indexed in
+[`docs/README.md`](docs/README.md). If you are using the installed skill, its
 entrypoint is [`skills/tina-cms/SKILL.md`](skills/tina-cms/SKILL.md).
 
 ## Official Tina Links
@@ -177,13 +178,8 @@ skills/tina-cms/
 
 ## Verification
 
-Deterministic checks ship with the repository:
-
-```bash
-node tests/check-skill.mjs
-node scripts/check-versions.mjs tests/fixtures/versions/current.json
-python3 scripts/check_commit_messages.py HEAD
-```
+The required maintainer gate, including commands and exit semantics, is owned
+by [`AGENTS.md`'s Verification section](AGENTS.md#verification).
 
 - `tests/check-skill.mjs` validates the payload (frontmatter, reference routing,
   runtime-path boundary, registry shapes, research provenance and finding-ID
@@ -193,7 +189,9 @@ python3 scripts/check_commit_messages.py HEAD
   versions against [`references/version-registry.md`](skills/tina-cms/references/version-registry.md) and reports below-floor,
   known-bad-window, and blocked-version findings (tri-state exit codes).
 - `tests/run-scenarios.mjs` runs the LLM-judged behavioral suite; with no model
-  provider configured it degrades to exit `2` ("could not run").
+  provider configured it degrades to exit `2` ("could not run"). It is
+  read-only by default; use `--write-baseline` only to intentionally record the
+  first green baseline.
 
 `quick_validate.py` from the Codex skill-creator is an optional manual check, not
 a required repository step.
@@ -217,6 +215,9 @@ git config core.hooksPath .githooks
 
 ```text
 skills/tina-cms/       # the portable runtime payload (the only shipped artifact)
+docs/README.md         # Diátaxis-oriented map for authoring documentation
+docs/tutorial-first-validation.md # safe first maintainer validation pass
+docs/how-to-update-runtime-reference.md # task guide for reference updates
 docs/research/         # authoring-only findings: research-log, index, topic files
 docs/official-links.md # human-facing export of the docs-link bank
 docs/roadmap.md        # milestones, shipped log, backlog, maintenance triggers
@@ -233,6 +234,7 @@ scripts/               # version checker and commit-message checker
 | [`AGENTS.md`](AGENTS.md)                                                                           | Contributor and maintainer conventions: boundaries, editing rules, the commit message contract, and repository operations. This repository has no separate `CONTRIBUTING.md` or `MAINTENANCE.md`; `AGENTS.md` is both the contributing guide and the operational reference. |
 | [`SECURITY.md`](SECURITY.md)                                                                       | Security policy, scope, and reporting.                                                                                                                                                        |
 | [`LICENSE`](LICENSE)                                                                               | MIT license text.                                                                                                                                                                             |
+| [`docs/README.md`](docs/README.md)                                                                 | Authoring documentation map: tutorial, task guide, operational policy, reference, and explanation.                                                                                           |
 | [`docs/roadmap.md`](docs/roadmap.md)                                                               | Milestones, shipped log, backlog, and maintenance triggers.                                                                                                                                   |
 | [`docs/official-links.md`](docs/official-links.md)                                                 | Human-facing export of the docs-link bank.                                                                                                                                                    |
 | [`skills/tina-cms/SKILL.md`](skills/tina-cms/SKILL.md)                                             | The runtime entrypoint (router).                                                                                                                                                              |

@@ -39,6 +39,16 @@ const RESEARCH_TOPIC_FILES = [
 /** Root authoring documents reviewed by the Documentation Drift Review rule. */
 const DRIFT_DOCS = ["README.md", "SECURITY.md", "AGENTS.md", "docs/roadmap.md"];
 
+/** Task guides named by the Documentation Drift Review policy. */
+const AUTHORING_GUIDE_DOCS = [
+  "docs/README.md",
+  "docs/tutorial-first-validation.md",
+  "docs/how-to-update-runtime-reference.md",
+];
+
+/** Entry points and task guides whose relative links form the authoring map. */
+const NAVIGATION_DOCS = ["README.md", "AGENTS.md", ...AUTHORING_GUIDE_DOCS];
+
 const ID_RE = /\b(?:INST|CLI|SCHEMA|API|DEPLOY|CLOUD|SELF|TDOCS|STYLE)-\d{2,}\b/g;
 
 /** Resolve the repository root from --root, else from the script location. */
@@ -456,9 +466,58 @@ function checkDocumentationDrift(findings, root) {
     findings.push({ code: "i.drift-rule", message: "AGENTS.md has no `## Documentation Drift Review` section" });
     return;
   }
-  for (const rel of ["README.md", "SECURITY.md", "AGENTS.md"]) {
+  for (const rel of ["README.md", "SECURITY.md", "AGENTS.md", ...AUTHORING_GUIDE_DOCS]) {
     if (!section[0].includes(rel))
       findings.push({ code: "i.drift-set", message: `Documentation Drift Review does not name ${rel}` });
+  }
+}
+
+/** GitHub-compatible enough for the controlled headings in authoring docs. */
+function headingAnchor(heading) {
+  return heading
+    .toLowerCase()
+    .replace(/<[^>]*>/g, "")
+    .replace(/[`*_~]/g, "")
+    .replace(/[^\w\s-]/g, "")
+    .trim()
+    .replace(/\s+/g, "-");
+}
+
+/**
+ * Ensure the maintained authoring map and its guides neither vanish nor point
+ * readers at stale local files or headings. This intentionally validates only
+ * the small navigation surface, not arbitrary Markdown across the repository.
+ */
+function checkAuthoringNavigation(findings, root) {
+  for (const rel of NAVIGATION_DOCS) {
+    const source = join(root, rel);
+    if (!existsSync(source)) {
+      findings.push({ code: "k.nav-doc", message: `${rel} is missing (authoring navigation document)` });
+      continue;
+    }
+    const text = readText(source);
+    for (const match of text.matchAll(/\[[^\]]+\]\(([^)\s]+)\)/g)) {
+      const href = match[1];
+      if (/^(?:https?:|mailto:|#)/i.test(href)) continue;
+      const [pathPart, fragment] = href.split("#", 2);
+      const target = resolve(dirname(source), pathPart || ".");
+      const relTarget = relative(root, target);
+      if (relTarget === ".." || relTarget.startsWith(`..${process.platform === "win32" ? "\\" : "/"}`) || !existsSync(target)) {
+        findings.push({ code: "k.target", message: `${rel} links to missing local target ${href}` });
+        continue;
+      }
+      if (!fragment || !statSync(target).isFile()) continue;
+      const anchors = new Set(
+        readText(target)
+          .split("\n")
+          .flatMap((line) => {
+            const heading = /^#{1,6}\s+(.+?)(?:\s+#+)?\s*$/.exec(line);
+            return heading ? [headingAnchor(heading[1])] : [];
+          }),
+      );
+      if (!anchors.has(fragment))
+        findings.push({ code: "k.anchor", message: `${rel} links to missing heading ${href}` });
+    }
   }
 }
 
@@ -542,6 +601,7 @@ function main() {
     checkPortableCopy(findings, root);
     checkDocumentationDrift(findings, root);
     checkReferenceProvenanceIds(findings, root);
+    checkAuthoringNavigation(findings, root);
   } catch (err) {
     const message = err instanceof CheckError ? err.message : `unexpected failure: ${err.message}`;
     process.stderr.write(`check-skill: could not run: ${message}\n`);
@@ -550,7 +610,7 @@ function main() {
 
   findings.sort((a, b) => a.code.localeCompare(b.code) || a.message.localeCompare(b.message));
   if (findings.length === 0) {
-    process.stdout.write("check-skill: clean (10 checks passed)\n");
+    process.stdout.write("check-skill: clean (11 checks passed)\n");
     process.exit(0);
   }
   process.stdout.write(`check-skill: ${findings.length} finding(s)\n`);

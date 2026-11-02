@@ -10,9 +10,11 @@ The repository has exactly two boundaries:
 - Runtime payload: `skills/tina-cms/` (`SKILL.md`, `references/`,
   `agents/openai.yaml`). This is the single portable skill directory that ships
   to every host. It is the only thing the installed skill loads.
-- Authoring-only: `docs/` (`docs/research/` and `docs/official-links.md`), plus
-  `README.md`, `SECURITY.md`, `LICENSE`, `AGENTS.md`, `docs/roadmap.md`,
-  `scripts/`, `tests/`, and `.github/`. Nothing here is loaded at runtime.
+- Authoring-only: `docs/` (`docs/README.md`, `docs/tutorial-first-validation.md`,
+  `docs/how-to-update-runtime-reference.md`, `docs/research/`, and
+  `docs/official-links.md`), plus `README.md`,
+  `SECURITY.md`, `LICENSE`, `AGENTS.md`, `docs/roadmap.md`, `scripts/`,
+  `tests/`, and `.github/`. Nothing here is loaded at runtime.
 
 The dependency is one-way: references are distilled **from** `docs/research/`.
 The reverse is never allowed.
@@ -22,6 +24,10 @@ The reverse is never allowed.
 Before starting any change, read [`docs/roadmap.md`](docs/roadmap.md) (Milestones,
 `Shipped`, and `Backlog`) and [`docs/research/index.md`](docs/research/index.md)
 for the project's current state.
+
+After that orientation, use the [authoring documentation map](docs/README.md) to
+choose the appropriate tutorial, task guide, reference, or explanation. This
+file remains the canonical owner of repository policy and required gates.
 
 - Check the `Backlog` so you do not redo planned or deferred work; a parked item
   (for example, one blocked on a missing provider) is deliberate, not forgotten.
@@ -192,8 +198,10 @@ python3 scripts/check_commit_messages.py HEAD
 
 The behavioral scenario suite (`node tests/run-scenarios.mjs`) is LLM-judged and
 degrades to exit 2 when no model provider is configured; exit 2 means
-"could not run", not "findings". `quick_validate.py` from the Codex
-skill-creator is an optional manual check, not a required repository step.
+"could not run", not "findings". It is read-only by default; after an
+intentional first green run, pass `--write-baseline` to record R-1's baseline.
+`quick_validate.py` from the Codex skill-creator is an optional manual check,
+not a required repository step.
 
 ## Documentation Drift Review
 
@@ -208,17 +216,22 @@ commit body:
   `.github/`, `.githooks/`);
 - the roadmap (`docs/roadmap.md`).
 
-The root authoring documents in scope are:
+The authoring documents in scope are:
 
 | Document      | Review when                                     | Confirm                                                                                            |
 | :------------ | :---------------------------------------------- | :------------------------------------------------------------------------------------------------- |
 | `README.md`   | scope, install, or verification changes         | Overview, Install, Verification, and See Also still match reality                                  |
 | `SECURITY.md` | scope, trust surface, or release-policy changes | `Scope`, `Secret Handling`, and `Supported Versions` still match, and `Last reviewed` is refreshed |
 | `AGENTS.md`   | layout, rules, machinery, or repository-settings changes  | Boundaries, Editing Rules, Repository Shape And Operations, and Verification still match reality |
+| `docs/README.md` | authoring-documentation navigation or classification changes | Links remain valid and each document has one clear role |
+| `docs/tutorial-first-validation.md` | first-pass validation commands or expected outcomes change | The learning sequence and its expected exits remain accurate |
+| `docs/how-to-update-runtime-reference.md` | reference-authoring procedure or policy changes | The task steps defer policy and gates to this file rather than duplicating them |
 
 `tests/check-skill.mjs` verifies these documents exist, that `SECURITY.md`
-carries a `Last reviewed` date, and that this section names the required set; it
-cannot judge semantic staleness, so the review itself is a human or agent step.
+carries a `Last reviewed` date, that this section names the required set, and
+that the authoring-navigation documents resolve their local links and headings.
+It cannot judge semantic staleness, so the review itself is a human or agent
+step.
 
 ## Mandatory Phase-Close Documentation Gate
 
