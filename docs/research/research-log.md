@@ -25,8 +25,8 @@ anything here. Findings flow one way: references are distilled from this record.
 - One excluded entry, `jezweb/claude-skills/tinacms`, retained only as a record
   of unsafe and stale practice. It is not a source for any runtime reference.
 - The read-only inspection clones of the verified-safe community skills were
-  moved out of this repository after authoring and now live at
-  `~/projects/third-party-skills-for-review/`. No third-party code is tracked,
+  moved out of this repository after authoring and now live in a local
+  inspection directory. No third-party code is tracked,
   published, or routed at runtime; `source-registry.md` cites the skills by name
   and tier only. The `external-tina-skills-for-inspection/` ignore entry is kept
   as a guard against accidentally re-adding a clone.
