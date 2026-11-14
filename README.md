@@ -122,15 +122,15 @@ below from the repository root.
 Copy the payload into the Codex skills directory:
 
 ```bash
-mkdir -p ~/.codex/skills
-cp -r skills/tina-cms ~/.codex/skills/tina-cms
+mkdir -p "$HOME/.codex/skills"
+cp -r skills/tina-cms "$HOME/.codex/skills/tina-cms"
 ```
 
 Or symlink it for live updates from this checkout:
 
 ```bash
-mkdir -p ~/.codex/skills
-ln -s "$PWD/skills/tina-cms" ~/.codex/skills/tina-cms
+mkdir -p "$HOME/.codex/skills"
+ln -s "$PWD/skills/tina-cms" "$HOME/.codex/skills/tina-cms"
 ```
 
 ### opencode
@@ -138,15 +138,15 @@ ln -s "$PWD/skills/tina-cms" ~/.codex/skills/tina-cms
 Copy the payload into the opencode skills directory:
 
 ```bash
-mkdir -p ~/.config/opencode/skills
-cp -r skills/tina-cms ~/.config/opencode/skills/tina-cms
+mkdir -p "$HOME/.config/opencode/skills"
+cp -r skills/tina-cms "$HOME/.config/opencode/skills/tina-cms"
 ```
 
 Or symlink it:
 
 ```bash
-mkdir -p ~/.config/opencode/skills
-ln -s "$PWD/skills/tina-cms" ~/.config/opencode/skills/tina-cms
+mkdir -p "$HOME/.config/opencode/skills"
+ln -s "$PWD/skills/tina-cms" "$HOME/.config/opencode/skills/tina-cms"
 ```
 
 The payload carries no host-specific runtime commands or absolute paths. Each

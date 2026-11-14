@@ -6,7 +6,7 @@ name: validate
 # validator `quick_validate.py` ships with the Codex skill-creator, which is not
 # vendored in this repository. Run it locally when that toolchain is available:
 #
-#   python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py skills/tina-cms
+#   python3 "$CODEX_HOME"/skills/.system/skill-creator/scripts/quick_validate.py skills/tina-cms  # or $HOME/.codex/skills/.system/...
 #
 # The behavioral scenario suite (`node tests/run-scenarios.mjs`) is LLM-judged and
 # exits 2 when no model provider is configured; that is "could not run"
