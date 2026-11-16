@@ -433,3 +433,29 @@ should be consolidated, measured against the skill-creator authoring rubric
 ### Next-research trigger
 
 - Re-run when a new `tinacms` or `@tinacms/cli` minor/patch lands, a new advisory raises a floor, a row passes its TTL, a deployment-options page changes, or a TinaDocs OpenAPI area is exercised.
+
+## Session 2026-11-16: scheduled freshness run
+
+### Packages researched
+
+- `tinacms` (npm current stable: 3.15.2)
+- `@tinacms/cli` (npm current stable: 4.0.5)
+
+### Sources
+
+- npm registry (`npm view tinacms version`, `npm view @tinacms/cli version`).
+- Repo registries `skills/tina-cms/references/source-registry.md` and `.../version-registry.md`, and the `docs/research/` topic-file provenance headers.
+
+### Method
+
+- TTL 120 days. Compared each registry row's checked date and every topic-file provenance date against the TTL, and compared the npm current stable line with the registry's recorded current stable line.
+
+### Result
+
+- drift: false
+- staleness findings: 0; version-drift findings: 0
+- issue action: per the workflow summary (issue upsert on drift, or skipped without a remote/auth).
+
+### Next-research trigger
+
+- Re-run when a new `tinacms` or `@tinacms/cli` minor/patch lands, a new advisory raises a floor, a row passes its TTL, a deployment-options page changes, or a TinaDocs OpenAPI area is exercised.
